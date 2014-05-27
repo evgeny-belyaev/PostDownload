@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class ClipboardMonitorService extends Service
 {
-    private static final String TAG = "ClipboardManager";
+    private static final String TAG = "ClipboardMonitorService";
 
     private ClipboardManager mClipboardManager;
 
@@ -52,6 +52,7 @@ public class ClipboardMonitorService extends Service
             public void onPrimaryClipChanged()
             {
                 Log.d(TAG, "onPrimaryClipChanged");
+
                 ClipData clip = mClipboardManager.getPrimaryClip();
 
                 NotificationCompat.Builder mBuilder =
