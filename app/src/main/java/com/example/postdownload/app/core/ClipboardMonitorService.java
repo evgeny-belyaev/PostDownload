@@ -13,6 +13,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.example.postdownload.app.MainActivity;
 import com.example.postdownload.app.R;
+import org.jsoup.nodes.Document;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,6 +30,8 @@ public class ClipboardMonitorService extends Service
     private static final String TAG = "ClipboardMonitorService";
 
     private ClipboardManager mClipboardManager;
+    private PublishSubject<URL> mTrigger;
+    private Subscription mSubscription;
 
     @Override
     public void onCreate()
@@ -31,7 +41,38 @@ public class ClipboardMonitorService extends Service
         mClipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         mClipboardManager.addPrimaryClipChangedListener(mOnPrimaryClipChangedListener);
 
-        Log.d(TAG, "Service started");
+        mTrigger = PublishSubject.create();
+
+        mSubscription = mTrigger
+            .flatMap(new Func1<URL, Observable<PostDto>>()
+            {
+                @Override
+                public Observable<PostDto> call(URL url)
+                {
+                    return PostLoader
+                        .downloadPost(url)
+                        .map(new Func1<Document, PostDto>()
+                        {
+                            @Override
+                            public PostDto call(Document document)
+                            {
+                                return PostLoader.parsePost(document);
+                            }
+                        });
+                }
+            })
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                new Action1<PostDto>()
+                {
+                    @Override
+                    public void call(PostDto postDto)
+                    {
+                        showNotification(postDto);
+                    }
+                }
+            );
     }
 
     @Override
@@ -44,6 +85,8 @@ public class ClipboardMonitorService extends Service
             mClipboardManager.removePrimaryClipChangedListener(
                 mOnPrimaryClipChangedListener);
         }
+
+        mSubscription.unsubscribe();
     }
 
     @Override
@@ -74,21 +117,19 @@ public class ClipboardMonitorService extends Service
                         return;
                     }
 
-                    url = new URL(text.toString());
+                    mTrigger.onNext(new URL(text.toString()));
                 }
                 catch (MalformedURLException e)
                 {
                     return; // ignore all errors
                 }
-
-                showNotification(url);
             }
         };
 
-    private void showNotification(URL url)
+    private void showNotification(PostDto postDto)
     {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(MainActivity.INTENT_EXTRA_URL, url);
+        intent.putExtra(MainActivity.INTENT_EXTRA_POST_DTO, postDto);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
             this,
@@ -101,11 +142,12 @@ public class ClipboardMonitorService extends Service
             new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Copied url")
-                .setContentText(url.toString())
+                .setContentText(postDto.title)
                 .setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
         mNotificationManager.notify(0, mBuilder.build());
     }
+
 }

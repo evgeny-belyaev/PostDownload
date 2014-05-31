@@ -1,5 +1,8 @@
 package com.example.postdownload.app.core;
 
-public class PostDto
+import java.io.Serializable;
+
+public class PostDto implements Serializable
 {
+    public String title;
 }

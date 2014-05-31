@@ -25,6 +25,10 @@ public class PostLoader
 
     public static PostDto parsePost(Document document)
     {
-        return new PostDto();
+        PostDto dto = new PostDto();
+
+        dto.title = "Hello!";
+
+        return dto;
     }
 }
