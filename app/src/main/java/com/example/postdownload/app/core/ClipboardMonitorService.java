@@ -13,7 +13,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.example.postdownload.app.MainActivity;
 import com.example.postdownload.app.R;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,9 +23,11 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import rx.util.async.Async;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.Callable;
 
 public class ClipboardMonitorService extends Service
 {
@@ -49,16 +53,16 @@ public class ClipboardMonitorService extends Service
                 @Override
                 public Observable<PostDto> call(URL url)
                 {
-                    return PostLoader
-                        .downloadPost(url)
-                        .map(new Func1<Document, PostDto>()
-                        {
-                            @Override
-                            public PostDto call(Document document)
+                    return
+                        downloadPost(url)
+                            .map(new Func1<Document, PostDto>()
                             {
-                                return PostLoader.parsePost(document);
-                            }
-                        });
+                                @Override
+                                public PostDto call(Document document)
+                                {
+                                    return parsePost(document);
+                                }
+                            });
                 }
             })
             .subscribeOn(Schedulers.io())
@@ -70,6 +74,14 @@ public class ClipboardMonitorService extends Service
                     public void call(PostDto postDto)
                     {
                         showNotification(postDto);
+                    }
+                },
+                new Action1<Throwable>()
+                {
+                    @Override
+                    public void call(Throwable throwable)
+                    {
+                        // do nothing
                     }
                 }
             );
@@ -104,8 +116,6 @@ public class ClipboardMonitorService extends Service
                 Log.d(TAG, "onPrimaryClipChanged");
 
                 ClipData clip = mClipboardManager.getPrimaryClip();
-
-                URL url;
 
                 try
                 {
@@ -150,4 +160,63 @@ public class ClipboardMonitorService extends Service
         mNotificationManager.notify(0, mBuilder.build());
     }
 
+    private static Observable<Document> downloadPost(final URL url)
+    {
+        return Async.fromCallable(new Callable<Document>()
+        {
+            @Override
+            public Document call() throws Exception
+            {
+                return Jsoup.connect(url.toString())
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36")
+                    .get();
+            }
+        }, Schedulers.io());
+    }
+
+    private static PostDto parsePost(Document document)
+    {
+        /*
+        *   post title - document.select("div.wi_author").first().text()
+            post body - document.select("div.wi_body").first().text()
+            song - document.select("div.audio input")
+            title - document.select("div.audio td.info span.title")
+            artist - document.select("div.audio td.info b")
+            song duration - document.select("div.audio td.info .duration")
+        * */
+
+        PostDto postDto = new PostDto();
+
+        postDto.title = document.select("div.fw_post_name").first().text();
+        postDto.body = document.select("div.wall_post_text").first().text();
+
+        Elements urls = document.select("div.audio input");
+        Elements titles = document.select("div.audio td.info span.title");
+        Elements artists = document.select("div.audio td.info b");
+        Elements durations = document.select("div.audio td.info .duration");
+
+        int size = urls.size();
+
+        for (int i = 0; i < size; i++)
+        {
+            SongDto songDto = new SongDto();
+
+            songDto.title = titles.get(i).text();
+            songDto.artist = artists.get(i).text();
+            songDto.duration = durations.get(i).text();
+
+            try
+            {
+                songDto.url = new URL(urls.get(i).val());
+            }
+            catch (MalformedURLException e)
+            {
+                continue;
+            }
+
+            postDto.songs.add(songDto);
+        }
+
+        return postDto;
+    }
 }

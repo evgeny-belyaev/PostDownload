@@ -4,8 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
-
-import java.net.URL;
+import com.example.postdownload.app.core.PostDto;
 
 public class MainActivity extends Activity
 {
@@ -20,10 +19,10 @@ public class MainActivity extends Activity
         setContentView(R.layout.main);
 
         Intent intent = getIntent();
-        URL url = (URL)intent.getSerializableExtra(INTENT_EXTRA_POST_DTO);
+        PostDto postDto = (PostDto)intent.getSerializableExtra(INTENT_EXTRA_POST_DTO);
 
         TextView tw = (TextView)findViewById(android.R.id.text1);
-        tw.setText(url.toString());
+        tw.setText(postDto.title);
     }
 }
 
