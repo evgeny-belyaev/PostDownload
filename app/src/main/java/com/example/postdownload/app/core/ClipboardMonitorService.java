@@ -1,4 +1,4 @@
-package com.example.postdownload.app;
+package com.example.postdownload.app.core;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,6 +11,8 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import com.example.postdownload.app.MainActivity;
+import com.example.postdownload.app.R;
 
 import java.net.MalformedURLException;
 import java.net.URL;
