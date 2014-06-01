@@ -1,8 +1,35 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme"
+           parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="AppTheme.Frame">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+    </style>
+
+    <style name="AppTheme.MainActivity"/>
+
+    <style name="AppTheme.MainActivity.Title">
+        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+    </style>
+
+    <style name="AppTheme.SongsList">
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="AppTheme.SongsList.Item">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <style name="AppTheme.SongsList.Title">
+
     </style>
 
 </resources>
