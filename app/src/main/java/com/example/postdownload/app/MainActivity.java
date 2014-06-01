@@ -1,35 +1,34 @@
 package com.example.postdownload.app;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+import com.example.postdownload.app.core.PostDownloadTaskFragment;
 import com.example.postdownload.app.core.PostDto;
+import com.example.postdownload.app.core.PostItem;
 import com.example.postdownload.app.core.SongDto;
-import rx.Observable;
+import com.example.postdownload.app.lib.FragmentHelper;
+import com.example.postdownload.app.lib.SubscriptionHelper;
 import rx.android.observables.ViewObservable;
-import rx.functions.Func1;
+import rx.functions.Action1;
+import rx.functions.Func0;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity
+public class MainActivity extends FragmentActivity
 {
     public static int REQUEST_CODE_OPEN_ACTIVITY = 0;
     public static String INTENT_EXTRA_POST_DTO = "url";
     private PostDto mPostDto;
     private LinearLayout mList;
     private List<PostItem> mPostItems = new ArrayList<PostItem>();
-
-    private class PostItem
-    {
-        public SongDto songDto;
-        public boolean isSelected;
-        public ProgressBar progressView;
-    }
+    private PostDownloadTaskFragment mDownloader;
+    private SubscriptionHelper mSubscriptionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -45,16 +44,29 @@ public class MainActivity extends Activity
         mPostDto = getPost(intent);
         ((TextView)findViewById(R.id.post_title)).setText(mPostDto.title);
 
-        ViewObservable
-            .clicks(((Button)findViewById(R.id.download)), false)
-            .flatMap(new Func1<Button, Observable<PostItem>>()
+        mDownloader = FragmentHelper.createOrRestore(getSupportFragmentManager(), "downloader", new Func0<PostDownloadTaskFragment>()
+        {
+            @Override
+            public PostDownloadTaskFragment call()
             {
-                @Override
-                public Observable<PostItem> call(Button button)
+                return PostDownloadTaskFragment.create();
+            }
+        });
+
+        mSubscriptionHelper = new SubscriptionHelper();
+
+        mSubscriptionHelper.manage(
+            ViewObservable
+                .clicks(((Button)findViewById(R.id.download)), false)
+                .subscribe(new Action1<Button>()
                 {
-                    return Observable.from(mPostItems);
-                }
-            });
+                    @Override
+                    public void call(Button button)
+                    {
+                        mDownloader.start(mPostItems);
+                    }
+                })
+        );
 
         fillList();
     }
@@ -69,6 +81,7 @@ public class MainActivity extends Activity
             final SongDto songDto = mPostDto.songs.get(i);
             final PostItem postItem = new PostItem();
             postItem.songDto = songDto;
+            postItem.isSelected = true;
 
             View view = inflater.inflate(R.layout.songs_list_item, mList, false);
 
@@ -78,7 +91,8 @@ public class MainActivity extends Activity
             postItem.progressView = progressBar;
 
             CheckBox checkBox = (CheckBox)view.findViewById(R.id.song_list_item_is_selected);
-            checkBox.setChecked(true);
+            checkBox.setChecked(postItem.isSelected);
+
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
             {
                 @Override
@@ -96,6 +110,14 @@ public class MainActivity extends Activity
     public static PostDto getPost(Intent intent)
     {
         return (PostDto)intent.getSerializableExtra(INTENT_EXTRA_POST_DTO);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        mSubscriptionHelper.unsubscribe();
+
+        super.onDestroy();
     }
 }
 
