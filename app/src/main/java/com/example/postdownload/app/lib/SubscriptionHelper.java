@@ -22,5 +22,7 @@ public class SubscriptionHelper
                 subscription.unsubscribe();
             }
         }
+
+        mManagedSubscriptions.clear();
     }
 }

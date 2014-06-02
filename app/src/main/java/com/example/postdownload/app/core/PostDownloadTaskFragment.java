@@ -2,13 +2,14 @@ package com.example.postdownload.app.core;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import com.example.postdownload.app.lib.SubscriptionHelper;
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import java.io.FileOutputStream;
@@ -22,12 +23,8 @@ public class PostDownloadTaskFragment extends Fragment
 {
     private SubscriptionHelper mSubscriptionHelper;
     private PublishSubject<List<PostItem>> mTrigger;
-
-    private class DownloadProgress
-    {
-        public String fileName;
-        public int progress;
-    }
+    private BehaviorSubject<Boolean> mDownloadButtonEnabled;
+    private PublishSubject<DownloadProgress> mProgressState;
 
     public PostDownloadTaskFragment()
     {
@@ -44,47 +41,66 @@ public class PostDownloadTaskFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
+        mDownloadButtonEnabled = BehaviorSubject.create(true);
+        mProgressState = PublishSubject.create();
         mTrigger = PublishSubject.create();
         mSubscriptionHelper = new SubscriptionHelper();
 
-        Observable<DownloadProgress> c = Observable
-            .concat(
-                mTrigger
-                    .flatMap(new Func1<List<PostItem>, Observable<PostItem>>()
-                    {
-                        @Override
-                        public Observable<PostItem> call(List<PostItem> postItems)
+        Observable<DownloadProgress> downloadProcess0 = mTrigger
+            .doOnNext(new Action1<List<PostItem>>()
+            {
+                @Override
+                public void call(List<PostItem> postItems)
+                {
+                    mDownloadButtonEnabled.onNext(false);
+                }
+            })
+            .flatMap(new Func1<List<PostItem>, Observable<DownloadProgress>>()
+            {
+                @Override
+                public Observable<DownloadProgress> call(List<PostItem> postItems)
+                {
+                    return Observable
+                        .concat(
+                            Observable
+                                .from(postItems)
+                                .filter(new Func1<PostItem, Boolean>()
+                                {
+                                    @Override
+                                    public Boolean call(PostItem postItem)
+                                    {
+                                        return postItem.isSelected;
+                                    }
+                                })
+                                .map(new Func1<PostItem, Observable<DownloadProgress>>()
+                                {
+                                    @Override
+                                    public Observable<DownloadProgress> call(PostItem postItem)
+                                    {
+                                        return downloadSong(postItem).subscribeOn(Schedulers.io());
+                                    }
+                                })
+                        )
+                        .doOnCompleted(new Action0()
                         {
-                            return Observable.from(postItems);
-                        }
-                    })
-                    .filter(new Func1<PostItem, Boolean>()
-                    {
-                        @Override
-                        public Boolean call(PostItem postItem)
-                        {
-                            return postItem.isSelected;
-                        }
-                    })
-                    .map(new Func1<PostItem, Observable<DownloadProgress>>()
-                    {
-                        @Override
-                        public Observable<DownloadProgress> call(PostItem postItem)
-                        {
-                            return downloadSong(postItem).subscribeOn(Schedulers.io());
-                        }
-                    })
-            )
+                            @Override
+                            public void call()
+                            {
+                                mDownloadButtonEnabled.onNext(true);
+                            }
+                        });
+                }
+            })
             .doOnNext(new Action1<DownloadProgress>()
             {
                 @Override
                 public void call(DownloadProgress progress)
                 {
-                    Log.d("PostDownloadTaskFragment", progress.progress + "%" + ": " + progress.fileName);
+                    mProgressState.onNext(progress);
                 }
             });
 
-        mSubscriptionHelper.manage(c.subscribe());
+        mSubscriptionHelper.manage(downloadProcess0.subscribe());
     }
 
     @Override
@@ -98,6 +114,16 @@ public class PostDownloadTaskFragment extends Fragment
     public void start(List<PostItem> postItems)
     {
         mTrigger.onNext(postItems);
+    }
+
+    public Observable<Boolean> observeDownloadButtonState()
+    {
+        return mDownloadButtonEnabled.asObservable();
+    }
+
+    public Observable<DownloadProgress> observeProgress()
+    {
+        return mProgressState.asObservable();
     }
 
     private Observable<DownloadProgress> downloadSong(final PostItem postItem)
@@ -129,7 +155,7 @@ public class PostDownloadTaskFragment extends Fragment
 
                                 output = new FileOutputStream("/storage/extSdCard/test/" + fileName);
 
-                                byte data[] = new byte[4096];
+                                byte data[] = new byte[1024 * 50];
                                 long total = 0;
                                 int count;
 
@@ -148,6 +174,7 @@ public class PostDownloadTaskFragment extends Fragment
                                         DownloadProgress downloadProgress = new DownloadProgress();
                                         downloadProgress.fileName = fileName;
                                         downloadProgress.progress = (int)(total * 100 / fileLength);
+                                        downloadProgress.url = url;
 
                                         subscriber.onNext(downloadProgress);
                                     }
