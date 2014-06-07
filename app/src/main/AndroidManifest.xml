@@ -28,6 +28,9 @@
             android:name=".MainActivity"
             android:label="DownloadActivity"/>
 
+        <activity android:name="net.rdrei.android.dirchooser.DirectoryChooserActivity" >
+        </activity>
+
         <service
             android:name=".core.ClipboardMonitorService"
             android:label="Clipboard Monitor"

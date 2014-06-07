@@ -10,6 +10,7 @@ import android.widget.*;
 import com.example.postdownload.app.core.*;
 import com.example.postdownload.app.lib.FragmentHelper;
 import com.example.postdownload.app.lib.SubscriptionHelper;
+import net.rdrei.android.dirchooser.DirectoryChooserActivity;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -25,9 +26,9 @@ public class MainActivity extends FragmentActivity
     public static String INTENT_EXTRA_POST_DTO = "url";
     private PostDto mPostDto;
     private LinearLayout mList;
-    private HashMap<String, ProgressBar> mProgressBars = new HashMap<String, ProgressBar>();
-    private HashMap<String, PostItemState> mListState = new HashMap<String, PostItemState>();
-    private List<PostItem> mPostItems = new ArrayList<PostItem>();
+    private HashMap<String, ProgressBar> mProgressBars = new HashMap<>();
+    private HashMap<String, PostItemState> mListState = new HashMap<>();
+    private List<PostItem> mPostItems = new ArrayList<>();
     private PostDownloadTaskFragment mDownloader;
     private SubscriptionHelper mSubscriptionHelper;
     private Button mDownloadButton;
@@ -57,6 +58,15 @@ public class MainActivity extends FragmentActivity
         });
 
         fillList();
+
+        final Intent chooserIntent = new Intent(this, DirectoryChooserActivity.class);
+
+        // Optional: Allow users to create a new directory with a fixed name.
+        chooserIntent.putExtra(DirectoryChooserActivity.EXTRA_NEW_DIR_NAME,
+            "DirChooserSample");
+
+        // REQUEST_DIRECTORY is a constant integer to identify the request, e.g. 0
+        startActivityForResult(chooserIntent, 0);
     }
 
     @Override
