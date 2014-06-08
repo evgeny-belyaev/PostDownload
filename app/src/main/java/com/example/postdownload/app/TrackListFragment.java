@@ -13,6 +13,7 @@ import com.example.postdownload.app.core.PostDto;
 import com.example.postdownload.app.core.TrackDto;
 import com.example.postdownload.app.lib.FragmentHelper;
 import com.example.postdownload.app.lib.SubscriptionHelper;
+import net.rdrei.android.dirchooser.DirectoryChooserFragment;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -45,6 +46,7 @@ public class TrackListFragment extends Fragment
     private SubscriptionHelper mSubscriptionHelper;
     private PostDownloadTaskFragment mDownloader;
     private String mPostTitle;
+    private DirectoryChooserFragment mDirectoryPicker;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -107,6 +109,8 @@ public class TrackListFragment extends Fragment
         mDownloadTo = (TextView)view.findViewById(R.id.controls_download_to);
         mFreeSpace = (TextView)view.findViewById(R.id.controls_free_space);
 
+        mDirectoryPicker = DirectoryChooserFragment.newInstance("bla", null);
+
         return view;
     }
 
@@ -132,6 +136,15 @@ public class TrackListFragment extends Fragment
                 }
 
                 mExpanded = !mExpanded;
+            }
+        });
+
+        mChooseDir.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                mDirectoryPicker.show(getFragmentManager(), null);
             }
         });
 

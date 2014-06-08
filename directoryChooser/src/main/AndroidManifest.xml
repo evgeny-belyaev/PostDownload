@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="net.rdrei.android.dirchooser" >
+<manifest package="net.rdrei.android.dirchooser">
+    <application></application>
 </manifest>

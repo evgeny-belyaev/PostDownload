@@ -41,7 +41,8 @@ import java.util.Collections;
  * Use the {@link DirectoryChooserFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DirectoryChooserFragment extends DialogFragment {
+public class DirectoryChooserFragment extends android.support.v4.app.DialogFragment
+{
     public static final String KEY_CURRENT_DIRECTORY = "CURRENT_DIRECTORY";
     private static final String ARG_NEW_DIRECTORY_NAME = "NEW_DIRECTORY_NAME";
     private static final String ARG_INITIAL_DIRECTORY = "INITIAL_DIRECTORY";

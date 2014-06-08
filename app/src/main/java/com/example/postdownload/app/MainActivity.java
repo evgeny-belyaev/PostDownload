@@ -3,6 +3,7 @@ package com.example.postdownload.app;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -14,13 +15,14 @@ import com.example.postdownload.app.core.PostItem;
 import com.example.postdownload.app.core.TrackDto;
 import com.example.postdownload.app.lib.FragmentHelper;
 import com.example.postdownload.app.lib.SubscriptionHelper;
+import net.rdrei.android.dirchooser.DirectoryChooserFragment;
 import rx.functions.Func0;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity
+public class MainActivity extends FragmentActivity implements DirectoryChooserFragment.OnFragmentInteractionListener
 {
     public static int REQUEST_CODE_OPEN_ACTIVITY = 0;
     public static String INTENT_EXTRA_POST_DTO = "postDto";
@@ -32,6 +34,18 @@ public class MainActivity extends FragmentActivity
     private PostDownloadTaskFragment mDownloader;
     private SubscriptionHelper mSubscriptionHelper;
     private Button mDownloadButton;
+
+    @Override
+    public void onSelectDirectory(@NonNull String path)
+    {
+
+    }
+
+    @Override
+    public void onCancelChooser()
+    {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
