@@ -18,6 +18,7 @@ import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func0;
+import rx.functions.Func1;
 import rx.functions.Func2;
 
 import java.util.Arrays;
@@ -303,6 +304,28 @@ public class TrackListFragment extends Fragment
     private void setTrackChecked(String url, boolean isChecked)
     {
         mListState.get(url).isChecked = isChecked;
+        updateDownloadButtonTitle();
+    }
+
+    private void updateDownloadButtonTitle()
+    {
+        int number = Observable
+            .from(mListState.values())
+            .filter(new Func1<TrackModel, Boolean>()
+            {
+                @Override
+                public Boolean call(TrackModel trackModel)
+                {
+                    return trackModel.isChecked;
+                }
+            })
+            .count()
+            .toBlockingObservable()
+            .first();
+
+        mDownloadButton.setText("Загрузить " + StringHelpers.declOfNum(number, new String[] {
+            "трек", "трека", "треков"
+        }));
     }
 
     private void collapseSettings()
@@ -331,4 +354,6 @@ public class TrackListFragment extends Fragment
         outState.putSerializable(BUNDLE_KEY_STATE, mListState);
         outState.putString(BUNDLE_KEY_TITLE, mPostTitle);
     }
+
 }
+

@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:text="Загрузить 5 треков (123 МБ)"
+                android:text="Загрузить 5 треков"
                 style="@style/AppTheme.Controls.Field.Download"/>
 
             <ImageButton
