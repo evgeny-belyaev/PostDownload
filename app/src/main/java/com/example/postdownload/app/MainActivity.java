@@ -8,12 +8,12 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
-import com.example.postdownload.app.core.*;
+import com.example.postdownload.app.core.PostDownloadTaskFragment;
+import com.example.postdownload.app.core.PostDto;
+import com.example.postdownload.app.core.PostItem;
+import com.example.postdownload.app.core.TrackDto;
 import com.example.postdownload.app.lib.FragmentHelper;
 import com.example.postdownload.app.lib.SubscriptionHelper;
-import rx.android.observables.ViewObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func0;
 
 import java.util.ArrayList;
@@ -78,69 +78,6 @@ public class MainActivity extends FragmentActivity
         //        startActivityForResult(chooserIntent, 0);
     }
 
-//    @Override
-    protected void onResume1()
-    {
-        super.onResume();
-
-        mSubscriptionHelper.manage(
-            ViewObservable
-                .clicks(mDownloadButton, false)
-                .subscribe(new Action1<Button>()
-                           {
-                               @Override
-                               public void call(Button button)
-                               {
-                                   mDownloader.start(mPostItems);
-                               }
-                           },
-                    new Action1<Throwable>()
-                    {
-                        @Override
-                        public void call(Throwable throwable)
-                        {
-                            int i = 5;
-                        }
-                    })
-        );
-
-        mSubscriptionHelper.manage(
-            mDownloader
-                .observeDownloadButtonState()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>()
-                {
-                    @Override
-                    public void call(Boolean isEnabled)
-                    {
-                        mDownloadButton.setEnabled(isEnabled);
-                    }
-                })
-        );
-
-        mSubscriptionHelper.manage(
-            mDownloader
-                .observeProgress()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<DownloadProgress>()
-                {
-                    @Override
-                    public void call(DownloadProgress progress)
-                    {
-                        String postItemKey = progress.url.toString();
-                        ProgressBar progressBar = mProgressBars.get(postItemKey);
-                        int value = progress.progress;
-
-                        if (value > 0)
-                        {
-                            progressBar.setVisibility(View.VISIBLE);
-                        }
-
-                        progressBar.setProgress(value);
-                    }
-                })
-        );
-    }
 
     private void fillList()
     {
@@ -149,15 +86,15 @@ public class MainActivity extends FragmentActivity
         int size = mPostDto.songs.size();
         for (int i = 0; i < size; i++)
         {
-            final SongDto songDto = mPostDto.songs.get(i);
-            final String postItemKey = songDto.url.toString();
+            final TrackDto trackDto = mPostDto.songs.get(i);
+            final String postItemKey = trackDto.url.toString();
             final PostItem postItem = new PostItem();
-            postItem.songDto = songDto;
+            postItem.mTrackDto = trackDto;
             postItem.isSelected = true;
 
             View view = inflater.inflate(R.layout.songs_list_item, mList, false);
 
-            ((TextView)view.findViewById(R.id.song_list_item_title)).setText(songDto.title);
+            ((TextView)view.findViewById(R.id.song_list_item_title)).setText(trackDto.title);
 
             ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.song_list_item_progress);
             mProgressBars.put(postItemKey, progressBar);

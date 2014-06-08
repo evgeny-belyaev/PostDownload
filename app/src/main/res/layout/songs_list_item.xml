@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignBaseline="@id/song_list_item_title"
+        android:duplicateParentState="true"
         style="@style/AppTheme.TrackList.Item.CheckBox"/>
 
     <ProgressBar

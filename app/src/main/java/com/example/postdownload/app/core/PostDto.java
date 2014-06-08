@@ -9,5 +9,5 @@ public class PostDto implements Serializable
     public String title;
     public String body;
 
-    public List<SongDto> songs = new ArrayList<SongDto>();
+    public List<TrackDto> songs = new ArrayList<TrackDto>();
 }

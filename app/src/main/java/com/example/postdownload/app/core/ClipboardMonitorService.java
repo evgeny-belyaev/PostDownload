@@ -199,22 +199,22 @@ public class ClipboardMonitorService extends Service
 
         for (int i = 0; i < size; i++)
         {
-            SongDto songDto = new SongDto();
+            TrackDto trackDto = new TrackDto();
 
-            songDto.title = titles.get(i).text();
-            songDto.artist = artists.get(i).text();
-            songDto.duration = durations.get(i).text();
+            trackDto.title = titles.get(i).text();
+            trackDto.artist = artists.get(i).text();
+            trackDto.duration = durations.get(i).text();
 
             try
             {
-                songDto.url = new URL(urls.get(i).val());
+                trackDto.url = new URL(urls.get(i).val());
             }
             catch (MalformedURLException e)
             {
                 continue;
             }
 
-            postDto.songs.add(songDto);
+            postDto.songs.add(trackDto);
         }
 
         return postDto;

@@ -2,6 +2,7 @@ package com.example.postdownload.app.core;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import com.example.postdownload.app.TrackModel;
 import com.example.postdownload.app.lib.SubscriptionHelper;
 import rx.Observable;
 import rx.Subscriber;
@@ -17,14 +18,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
-
-
 
 public class PostDownloadTaskFragment extends Fragment
 {
     private SubscriptionHelper mSubscriptionHelper;
-    private PublishSubject<List<PostItem>> mTrigger;
+    private PublishSubject<TrackModel[]> mTrigger;
     private BehaviorSubject<Boolean> mDownloadButtonEnabled;
     private PublishSubject<DownloadProgress> mProgressState;
 
@@ -49,37 +47,37 @@ public class PostDownloadTaskFragment extends Fragment
         mSubscriptionHelper = new SubscriptionHelper();
 
         Observable<DownloadProgress> downloadProcess0 = mTrigger
-            .doOnNext(new Action1<List<PostItem>>()
+            .doOnNext(new Action1<TrackModel[]>()
             {
                 @Override
-                public void call(List<PostItem> postItems)
+                public void call(TrackModel[] postItems)
                 {
                     mDownloadButtonEnabled.onNext(false);
                 }
             })
-            .flatMap(new Func1<List<PostItem>, Observable<DownloadProgress>>()
+            .flatMap(new Func1<TrackModel[], Observable<DownloadProgress>>()
             {
                 @Override
-                public Observable<DownloadProgress> call(List<PostItem> postItems)
+                public Observable<DownloadProgress> call(TrackModel[] postItems)
                 {
                     return Observable
                         .concat(
                             Observable
                                 .from(postItems)
-                                .filter(new Func1<PostItem, Boolean>()
+                                .filter(new Func1<TrackModel, Boolean>()
                                 {
                                     @Override
-                                    public Boolean call(PostItem postItem)
+                                    public Boolean call(TrackModel postItem)
                                     {
-                                        return postItem.isSelected;
+                                        return postItem.isChecked;
                                     }
                                 })
-                                .map(new Func1<PostItem, Observable<DownloadProgress>>()
+                                .map(new Func1<TrackModel, Observable<DownloadProgress>>()
                                 {
                                     @Override
-                                    public Observable<DownloadProgress> call(PostItem postItem)
+                                    public Observable<DownloadProgress> call(TrackModel trackModel)
                                     {
-                                        return downloadSong(postItem).subscribeOn(Schedulers.io());
+                                        return downloadSong(trackModel).subscribeOn(Schedulers.io());
                                     }
                                 })
                         )
@@ -113,7 +111,7 @@ public class PostDownloadTaskFragment extends Fragment
         super.onDestroy();
     }
 
-    public void start(List<PostItem> postItems)
+    public void start(TrackModel[] postItems)
     {
         mTrigger.onNext(postItems);
     }
@@ -128,7 +126,7 @@ public class PostDownloadTaskFragment extends Fragment
         return mProgressState.asObservable();
     }
 
-    private Observable<DownloadProgress> downloadSong(final PostItem postItem)
+    private Observable<DownloadProgress> downloadSong(final TrackModel trackModel)
     {
         return Observable
             .create(new Observable.OnSubscribe<DownloadProgress>()
@@ -136,11 +134,11 @@ public class PostDownloadTaskFragment extends Fragment
                         @Override
                         public void call(Subscriber<? super DownloadProgress> subscriber)
                         {
-                            URL url = postItem.songDto.url;
+                            URL url = trackModel.mTrackDto.url;
                             HttpURLConnection connection = null;
                             InputStream input = null;
                             FileOutputStream output = null;
-                            String fileName = postItem.songDto.artist + " - " + postItem.songDto.title + ".mp3";
+                            String fileName = trackModel.mTrackDto.artist + " - " + trackModel.mTrackDto.title + ".mp3";
 
                             try
                             {

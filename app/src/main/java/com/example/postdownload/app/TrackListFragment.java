@@ -7,36 +7,89 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.example.postdownload.app.core.DownloadProgress;
+import com.example.postdownload.app.core.PostDownloadTaskFragment;
 import com.example.postdownload.app.core.PostDto;
-import com.example.postdownload.app.core.PostItem;
-import com.example.postdownload.app.core.SongDto;
+import com.example.postdownload.app.core.TrackDto;
+import com.example.postdownload.app.lib.FragmentHelper;
+import com.example.postdownload.app.lib.SubscriptionHelper;
+import rx.Observable;
+import rx.android.observables.ViewObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func0;
+import rx.functions.Func2;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 public class TrackListFragment extends Fragment
 {
-    private LinearLayout mList;
+    private static final String BUNDLE_KEY_STATE = "state";
+    private static final java.lang.String BUNDLE_KEY_TITLE = "title";
+    private LinearLayout mTrackList;
     private Button mDownloadButton;
     private TextView mTitle;
-    private PostDto mPostDto;
 
-    private List<PostItem> mPostItems = new ArrayList<>();
-    private HashMap<String, PostItemState> mListState = new HashMap<>();
+    private HashMap<String, TrackModel> mListState = new HashMap<>();
+    private HashMap<String, UICacheModel> mUICache = new HashMap<>();
     private ImageButton mChooseDir;
     private TextView mDownloadTo;
     private TextView mFreeSpace;
     private ImageButton mExpand;
 
     private boolean mExpanded = false;
+    private SubscriptionHelper mSubscriptionHelper;
+    private PostDownloadTaskFragment mDownloader;
+    private String mPostTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        mPostDto = MainActivity.getPost(getActivity().getIntent());
+        mSubscriptionHelper = new SubscriptionHelper();
+
+        if (savedInstanceState != null)
+        {
+            mListState = (HashMap<String, TrackModel>)savedInstanceState.getSerializable(BUNDLE_KEY_STATE);
+            mPostTitle = savedInstanceState.getString(BUNDLE_KEY_TITLE);
+        }
+        else
+        {
+            PostDto postDto = MainActivity.getPost(getActivity().getIntent());
+            mPostTitle = postDto.title;
+            createListState(postDto);
+        }
+
+        mDownloader = FragmentHelper.createOrRestore(getFragmentManager(), "downloader", new Func0<PostDownloadTaskFragment>()
+        {
+            @Override
+            public PostDownloadTaskFragment call()
+            {
+                return PostDownloadTaskFragment.create();
+            }
+        });
+    }
+
+    private void createListState(PostDto postDto)
+    {
+        int size = postDto.songs.size();
+        for (int i = 0; i < size; i++)
+        {
+            final TrackDto trackDto = postDto.songs.get(i);
+            final String trackUrl = trackDto.url.toString();
+
+            final TrackModel trackModel = new TrackModel();
+            trackModel.progress = 0;
+            trackModel.isChecked = true;
+            trackModel.mTrackDto = trackDto;
+            trackModel.index = i;
+
+            mListState.put(trackUrl, trackModel);
+        }
     }
 
     @Override
@@ -44,7 +97,7 @@ public class TrackListFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.track_list_fragment, container, false);
 
-        mList = (LinearLayout)view.findViewById(R.id.songs_list);
+        mTrackList = (LinearLayout)view.findViewById(R.id.songs_list);
         mDownloadButton = (Button)view.findViewById(R.id.controls_start_download);
         mTitle = (TextView)view.findViewById(R.id.title);
 
@@ -61,7 +114,7 @@ public class TrackListFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        mTitle.setText(mPostDto.title);
+        mTitle.setText(mPostTitle);
 
         mExpand.setOnClickListener(new View.OnClickListener()
         {
@@ -82,61 +135,235 @@ public class TrackListFragment extends Fragment
         });
 
         collapseSettings();
+
         fillList();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        mSubscriptionHelper.manage(
+            ViewObservable
+                .clicks(mDownloadButton, false)
+                .subscribe(
+                    new Action1<Button>()
+                    {
+                        @Override
+                        public void call(Button button)
+                        {
+                            TrackModel[] values = mListState.values()
+                                .toArray(new TrackModel[] { });
+
+                            Arrays.sort(values, new Comparator<TrackModel>()
+                            {
+                                @Override
+                                public int compare(TrackModel lhs, TrackModel rhs)
+                                {
+                                    return lhs.index - rhs.index;
+                                }
+                            });
+
+                            for (UICacheModel uiCacheModel : mUICache.values())
+                            {
+                                if (!uiCacheModel.mCheckBox.isChecked())
+                                {
+                                    mTrackList.removeView(uiCacheModel.trackView);
+                                }
+                            }
+
+                            //                            mDownloader.start(values);
+                        }
+                    },
+                    new Action1<Throwable>()
+                    {
+                        @Override
+                        public void call(Throwable throwable)
+                        {
+                            int i = 5;
+                        }
+                    })
+        );
+
+        mSubscriptionHelper.manage(
+            mDownloader
+                .observeDownloadButtonState()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>()
+                {
+                    @Override
+                    public void call(Boolean isEnabled)
+                    {
+                        mDownloadButton.setEnabled(isEnabled);
+                    }
+                })
+        );
+
+        mSubscriptionHelper.manage(
+            mDownloader
+                .observeProgress()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<DownloadProgress>()
+                {
+                    @Override
+                    public void call(DownloadProgress progress)
+                    {
+                        //                        String postItemKey = progress.url.toString();
+                        //                        ProgressBar progressBar = mProgressBars.get(postItemKey);
+                        //                        int value = progress.progress;
+                        //
+                        //                        if (value > 0)
+                        //                        {
+                        //                            progressBar.setVisibility(View.VISIBLE);
+                        //                        }
+                        //
+                        //                        progressBar.setProgress(value);
+                    }
+                })
+        );
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        mSubscriptionHelper.unsubscribe();
     }
 
     private void fillList()
     {
-        LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        int size = mPostDto.songs.size();
-        for (int i = 0; i < size; i++)
-        {
-            final SongDto songDto = mPostDto.songs.get(i);
-            final String postItemKey = songDto.url.toString();
-
-            final PostItem postItem = new PostItem();
-            postItem.songDto = songDto;
-            postItem.isSelected = true;
-
-            final CheckableRelativeLayout view = (CheckableRelativeLayout)inflater.inflate(R.layout.songs_list_item, mList, false);
-
-            ((TextView)view.findViewById(R.id.song_list_item_title)).setText(songDto.title);
-            ((TextView)view.findViewById(R.id.song_list_item_artist)).setText(songDto.artist);
-
-            final CheckBox checkBox = (CheckBox)view.findViewById(R.id.song_list_item_is_selected);
-            checkBox.setChecked(postItem.isSelected);
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        Observable
+            .from(mListState.values())
+            .toSortedList(new Func2<TrackModel, TrackModel, Integer>()
             {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+                public Integer call(TrackModel trackModel1, TrackModel trackModel2)
                 {
-                    postItem.isSelected = mListState.get(postItemKey).isChecked = isChecked;
-                    view.setChecked(isChecked);
+                    return trackModel1.index - trackModel2.index;
+                }
+            })
+            .toBlockingObservable()
+            .forEach(new Action1<List<TrackModel>>()
+            {
+                @Override
+                public void call(List<TrackModel> trackModels)
+                {
+                    for (final TrackModel trackModel :
+                        trackModels.toArray(new TrackModel[] { }))
+                    {
+                        final String url = trackModel.mTrackDto.url.toString();
+
+                        final CheckableRelativeLayout view = (CheckableRelativeLayout)inflater.inflate(R.layout.songs_list_item, mTrackList, false);
+                        ((TextView)view.findViewById(R.id.song_list_item_title)).setText(trackModel.mTrackDto.title);
+                        ((TextView)view.findViewById(R.id.song_list_item_artist)).setText(trackModel.mTrackDto.artist);
+
+                        final CheckBox checkBox = (CheckBox)view.findViewById(R.id.song_list_item_is_selected);
+//                        checkBox.setChecked(trackModel.isChecked);
+                        checkBox.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                view.toggle();
+                                checkBox.toggle();
+                                setTrackChecked(url, view.isChecked());
+                            }
+                        });
+//                        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+//                        {
+//                            @Override
+//                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+//                            {
+//                                setTrackChecked(url, isChecked);
+//                                view.setChecked(isChecked);
+//                            }
+//                        });
+
+                        setTrackChecked(url, trackModel.isChecked);
+
+                        UICacheModel uiCacheModel = new UICacheModel();
+                        uiCacheModel.mCheckBox = checkBox;
+                        uiCacheModel.trackView = view;
+
+                        mUICache.put(url, uiCacheModel);
+
+                        view.setChecked(trackModel.isChecked);
+
+                        view.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                view.toggle();
+                                setTrackChecked(url, view.isChecked());
+                            }
+                        });
+
+                        mTrackList.addView(view);
+                    }
                 }
             });
 
-            PostItemState defaultState = new PostItemState();
-            defaultState.progress = 0;
-            defaultState.isChecked = true;
-            view.setChecked(true);
+        //        int size = mListState.values().size();
+        //        for (int i = 0; i < size; i++)
+        //        {
+        //            final TrackDto trackDto = mLi.songs.get(i);
+        //            final String trackUrl = trackDto.url.toString();
+        //
+        //            final CheckableRelativeLayout view = (CheckableRelativeLayout)inflater.inflate(R.layout.songs_list_item, mTrackList, false);
+        //
+        //            final TrackModel trackModel = new TrackModel();
+        //            trackModel.progress = 0;
+        //            trackModel.isChecked = true;
+        //            trackModel.mTrackDto = trackDto;
+        //            trackModel.index = i;
+        //
+        //            ((TextView)view.findViewById(R.id.song_list_item_title)).setText(trackDto.title);
+        //            ((TextView)view.findViewById(R.id.song_list_item_artist)).setText(trackDto.artist);
+        //
+        //            final CheckBox checkBox = (CheckBox)view.findViewById(R.id.song_list_item_is_selected);
+        //            checkBox.setChecked(trackModel.isChecked);
+        //            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        //            {
+        //                @Override
+        //                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+        //                {
+        //                    mListState.get(trackUrl).isChecked = isChecked;
+        //                    view.setChecked(isChecked);
+        //                }
+        //            });
+        //
+        //            UICacheModel uiCacheModel = new UICacheModel();
+        //            uiCacheModel.mCheckBox = checkBox;
+        //            uiCacheModel.trackView = view;
+        //
+        //            mUICache.put(trackUrl, uiCacheModel);
+        //
+        //            view.setChecked(true);
+        //
+        //            view.setOnClickListener(new View.OnClickListener()
+        //            {
+        //                @Override
+        //                public void onClick(View v)
+        //                {
+        //                    view.toggle();
+        //                    checkBox.toggle();
+        //                }
+        //            });
+        //
+        //            mListState.put(trackUrl, trackModel);
+        //
+        //            mTrackList.addView(view);
+        //        }
+    }
 
-            view.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    view.toggle();
-                    checkBox.toggle();
-                }
-            });
-
-            mListState.put(postItemKey, defaultState);
-
-            mList.addView(view);
-
-            mPostItems.add(postItem);
-        }
+    private void setTrackChecked(String url, boolean isChecked)
+    {
+        mListState.get(url).isChecked = isChecked;
     }
 
     private void collapseSettings()
@@ -155,5 +382,14 @@ public class TrackListFragment extends Fragment
         mFreeSpace.setVisibility(View.VISIBLE);
 
         mExpand.setActivated(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable(BUNDLE_KEY_STATE, mListState);
+        outState.putString(BUNDLE_KEY_TITLE, mPostTitle);
     }
 }

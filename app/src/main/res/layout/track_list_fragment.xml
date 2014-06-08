@@ -31,17 +31,7 @@
                 android:id="@+id/songs_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include layout="@layout/songs_list_item"/>
-
-                <include layout="@layout/songs_list_item"/>
-
-                <include layout="@layout/songs_list_item"/>
-
-                <include layout="@layout/songs_list_item"/>
-
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </LinearLayout>
 
