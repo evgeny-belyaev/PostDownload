@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@id/outer"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              style="@style/AppTheme.Frame">
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        style="@style/AppTheme.TrackList.List">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                style="@style/AppTheme.MainActivity.Title"/>
+
+            <LinearLayout
+                android:id="@+id/songs_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--<include layout="@layout/songs_list_item"/>-->
+
+                <!--<include layout="@layout/songs_list_item"/>-->
+
+                <!--<include layout="@layout/songs_list_item"/>-->
+
+                <!--<include layout="@layout/songs_list_item"/>-->
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        style="@style/AppTheme.Controls.Frame">
+
+        <RelativeLayout
+            android:id="@+id/controls"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/controls_start_download"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="Загрузить 5 треков (123 МБ)"
+                style="@style/AppTheme.Controls.Field.Download"/>
+
+            <ImageButton
+                android:id="@+id/controls_change_download_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/controls_start_download"
+                android:layout_below="@id/controls_start_download"
+                style="@style/AppTheme.Controls.Field.ChooseDir"/>
+
+            <TextView
+                android:id="@+id/controls_download_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/controls_start_download"
+                android:layout_alignTop="@id/controls_change_download_to"
+                style="@style/AppTheme.Controls.Field.DownloadTo"
+                android:text="Сохранить в .../Music/Widek"/>
+
+            <TextView
+                android:id="@+id/controls_free_space"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/controls_start_download"
+                android:layout_below="@id/controls_download_to"
+                android:layout_alignBottom="@id/controls_change_download_to"
+                style="@style/AppTheme.Controls.Field.FreeSpace"
+                android:text="400 мб свободно"/>
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            style="@style/AppTheme.Controls.Field.Expand"/>
+
+    </LinearLayout>
+
+</LinearLayout>

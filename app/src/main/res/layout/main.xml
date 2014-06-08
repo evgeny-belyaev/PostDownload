@@ -1,37 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                style="@style/AppTheme.Frame">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/outer"
+             android:layout_height="match_parent"
+             android:layout_width="match_parent">
 
-    <TextView
-        android:id="@+id/post_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        style="@style/AppTheme.MainActivity.Title"/>
-
-    <Button
-        android:id="@+id/download"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:text="Download"/>
-
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_below="@id/post_title"
-        android:layout_above="@id/download">
-
-        <LinearLayout
-            android:id="@+id/songs_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-    </ScrollView>
-
-</RelativeLayout>
+</FrameLayout>

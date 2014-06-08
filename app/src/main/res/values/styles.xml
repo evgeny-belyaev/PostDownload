@@ -7,29 +7,99 @@
     </style>
 
     <style name="AppTheme.Frame">
-        <item name="android:layout_marginTop">16dp</item>
-        <item name="android:layout_marginRight">16dp</item>
-        <item name="android:layout_marginBottom">16dp</item>
-        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:padding">0dp</item>
     </style>
 
     <style name="AppTheme.MainActivity"/>
 
     <style name="AppTheme.MainActivity.Title">
         <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
-    </style>
-
-    <style name="AppTheme.SongsList">
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:layout_marginTop">16dp</item>
     </style>
 
-    <style name="AppTheme.SongsList.Item">
+    <style name="AppTheme.Controls"/>
+
+    <style name="AppTheme.Controls.Field.ChooseDir">
+        <item name="android:src">@drawable/ic_action_sd_storage</item>
+        <item name="android:padding">8dp</item>
         <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:background">@android:drawable/screen_background_light_transparent</item>
     </style>
 
-    <style name="AppTheme.SongsList.Title">
-
+    <style name="AppTheme.Controls.Field.DownloadTo">
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
     </style>
 
+    <style name="AppTheme.Controls.Field.FreeSpace">
+        <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
+    </style>
+
+    <style name="AppTheme.Controls.Field.Expand">
+        <item name="android:background">@null</item>
+        <item name="android:src">@drawable/ic_action_expand</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="AppTheme.Controls.Field.Download">
+        <item name="android:background">@android:drawable/screen_background_light_transparent</item>
+    </style>
+
+    <style name="AppTheme.Controls.Field"></style>
+
+    <style name="AppTheme.Controls.Frame">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:background">@color/color1</item>
+    </style>
+
+    <style name="AppTheme.TrackList"/>
+
+    <style name="AppTheme.TrackList.List">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="AppTheme.TrackList.Item">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:background">@drawable/track_list_item_background</item>
+    </style>
+
+    <style name="AppTheme.TrackList.Item.Field">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="AppTheme.TrackList.Item.Field.Artist">
+        <item name="android:textColor">@color/track_list_item_text_color</item>
+    </style>
+
+    <style name="AppTheme.TrackList.Item.Field.Title">
+        <item name="android:textColor">@color/track_list_item_title_text_color</item>
+    </style>
+
+    <style name="AppTheme.TrackList.Item.CheckBox"/>
+
+    <color name="track_list_item_pressed_background">@color/color1</color>
+
+    <color name="track_list_item_checked_artist_text_color">@color/color0</color>
+    <color name="track_list_item_checked_title_text_color">@color/color2</color>
+
+    <color name="track_list_item_unchecked_artist_text_color">@color/color2</color>
+    <color name="track_list_item_unchecked_title_text_color">@color/color3</color>
+
+    <color name="color0">#000000</color>
+    <color name="color1">#E8EFF7</color>
+    <color name="color2">#949796</color>
+    <color name="color3">#ced1d0</color>
 </resources>
+

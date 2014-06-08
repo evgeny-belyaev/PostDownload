@@ -3,6 +3,7 @@ package com.example.postdownload.app;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,6 @@ import android.widget.*;
 import com.example.postdownload.app.core.*;
 import com.example.postdownload.app.lib.FragmentHelper;
 import com.example.postdownload.app.lib.SubscriptionHelper;
-import net.rdrei.android.dirchooser.DirectoryChooserActivity;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -23,7 +23,7 @@ import java.util.List;
 public class MainActivity extends FragmentActivity
 {
     public static int REQUEST_CODE_OPEN_ACTIVITY = 0;
-    public static String INTENT_EXTRA_POST_DTO = "url";
+    public static String INTENT_EXTRA_POST_DTO = "postDto";
     private PostDto mPostDto;
     private LinearLayout mList;
     private HashMap<String, ProgressBar> mProgressBars = new HashMap<>();
@@ -39,38 +39,47 @@ public class MainActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Intent intent = getIntent();
-
-        mSubscriptionHelper = new SubscriptionHelper();
-        mList = (LinearLayout)findViewById(R.id.songs_list);
-        mDownloadButton = (Button)findViewById(R.id.download);
-
-        mPostDto = getPost(intent);
-        ((TextView)findViewById(R.id.post_title)).setText(mPostDto.title);
-
-        mDownloader = FragmentHelper.createOrRestore(getSupportFragmentManager(), "downloader", new Func0<PostDownloadTaskFragment>()
+        FragmentHelper.replaceOrRestore(getSupportFragmentManager(), R.id.outer, "trackListFragment", new Func0<Fragment>()
         {
             @Override
-            public PostDownloadTaskFragment call()
+            public Fragment call()
             {
-                return PostDownloadTaskFragment.create();
+                return new TrackListFragment();
             }
         });
 
-        fillList();
+//        Intent intent = getIntent();
+//
+//        mSubscriptionHelper = new SubscriptionHelper();
+//        mList = (LinearLayout)findViewById(R.id.songs_list);
+//        mDownloadButton = (Button)findViewById(R.id.controls_start_download);
+//
+//        mPostDto = getPost(intent);
+//        ((TextView)findViewById(R.id.title)).setText(mPostDto.title);
+//
+//        mDownloader = FragmentHelper.createOrRestore(getSupportFragmentManager(), "downloader", new Func0<PostDownloadTaskFragment>()
+//        {
+//            @Override
+//            public PostDownloadTaskFragment call()
+//            {
+//                return PostDownloadTaskFragment.create();
+//            }
+//        });
+//
+//        fillList();
 
-        final Intent chooserIntent = new Intent(this, DirectoryChooserActivity.class);
-
-        // Optional: Allow users to create a new directory with a fixed name.
-        chooserIntent.putExtra(DirectoryChooserActivity.EXTRA_NEW_DIR_NAME,
-            "DirChooserSample");
-
-        // REQUEST_DIRECTORY is a constant integer to identify the request, e.g. 0
-        startActivityForResult(chooserIntent, 0);
+        //        final Intent chooserIntent = new Intent(this, DirectoryChooserActivity.class);
+        //
+        //        // Optional: Allow users to create a new directory with a fixed name.
+        //        chooserIntent.putExtra(DirectoryChooserActivity.EXTRA_NEW_DIR_NAME,
+        //            "DirChooserSample");
+        //
+        //        // REQUEST_DIRECTORY is a constant integer to identify the request, e.g. 0
+        //        startActivityForResult(chooserIntent, 0);
     }
 
-    @Override
-    protected void onResume()
+//    @Override
+    protected void onResume1()
     {
         super.onResume();
 
@@ -78,13 +87,21 @@ public class MainActivity extends FragmentActivity
             ViewObservable
                 .clicks(mDownloadButton, false)
                 .subscribe(new Action1<Button>()
-                {
-                    @Override
-                    public void call(Button button)
+                           {
+                               @Override
+                               public void call(Button button)
+                               {
+                                   mDownloader.start(mPostItems);
+                               }
+                           },
+                    new Action1<Throwable>()
                     {
-                        mDownloader.start(mPostItems);
-                    }
-                })
+                        @Override
+                        public void call(Throwable throwable)
+                        {
+                            int i = 5;
+                        }
+                    })
         );
 
         mSubscriptionHelper.manage(
@@ -172,8 +189,8 @@ public class MainActivity extends FragmentActivity
         return (PostDto)intent.getSerializableExtra(INTENT_EXTRA_POST_DTO);
     }
 
-    @Override
-    protected void onPause()
+//    @Override
+    protected void onPause1()
     {
         super.onPause();
 
