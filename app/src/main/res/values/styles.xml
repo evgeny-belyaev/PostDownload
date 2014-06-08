@@ -17,6 +17,7 @@
         <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
     </style>
 
     <style name="AppTheme.Controls"/>
@@ -65,7 +66,7 @@
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
         <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingRight">8dp</item>
     </style>
 
     <style name="AppTheme.TrackList.Item">
@@ -77,6 +78,7 @@
     <style name="AppTheme.TrackList.Item.Field">
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingLeft">8dp</item>
     </style>
 
     <style name="AppTheme.TrackList.Item.Field.Artist">
