@@ -167,7 +167,9 @@ public class TrackListFragment extends Fragment
 
                             for (UICacheModel uiCacheModel : mUICache.values())
                             {
-                                if (!uiCacheModel.mCheckBox.isChecked())
+                                CheckableRelativeLayout trackView = (CheckableRelativeLayout)uiCacheModel.trackView;
+
+                                if (!trackView.isChecked())
                                 {
                                     mTrackList.removeView(uiCacheModel.trackView);
                                 }
@@ -262,7 +264,6 @@ public class TrackListFragment extends Fragment
                         ((TextView)view.findViewById(R.id.song_list_item_artist)).setText(trackModel.mTrackDto.artist);
 
                         final CheckBox checkBox = (CheckBox)view.findViewById(R.id.song_list_item_is_selected);
-//                        checkBox.setChecked(trackModel.isChecked);
                         checkBox.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
@@ -273,15 +274,6 @@ public class TrackListFragment extends Fragment
                                 setTrackChecked(url, view.isChecked());
                             }
                         });
-//                        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-//                        {
-//                            @Override
-//                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-//                            {
-//                                setTrackChecked(url, isChecked);
-//                                view.setChecked(isChecked);
-//                            }
-//                        });
 
                         setTrackChecked(url, trackModel.isChecked);
 
@@ -292,7 +284,6 @@ public class TrackListFragment extends Fragment
                         mUICache.put(url, uiCacheModel);
 
                         view.setChecked(trackModel.isChecked);
-
                         view.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
@@ -307,58 +298,6 @@ public class TrackListFragment extends Fragment
                     }
                 }
             });
-
-        //        int size = mListState.values().size();
-        //        for (int i = 0; i < size; i++)
-        //        {
-        //            final TrackDto trackDto = mLi.songs.get(i);
-        //            final String trackUrl = trackDto.url.toString();
-        //
-        //            final CheckableRelativeLayout view = (CheckableRelativeLayout)inflater.inflate(R.layout.songs_list_item, mTrackList, false);
-        //
-        //            final TrackModel trackModel = new TrackModel();
-        //            trackModel.progress = 0;
-        //            trackModel.isChecked = true;
-        //            trackModel.mTrackDto = trackDto;
-        //            trackModel.index = i;
-        //
-        //            ((TextView)view.findViewById(R.id.song_list_item_title)).setText(trackDto.title);
-        //            ((TextView)view.findViewById(R.id.song_list_item_artist)).setText(trackDto.artist);
-        //
-        //            final CheckBox checkBox = (CheckBox)view.findViewById(R.id.song_list_item_is_selected);
-        //            checkBox.setChecked(trackModel.isChecked);
-        //            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        //            {
-        //                @Override
-        //                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-        //                {
-        //                    mListState.get(trackUrl).isChecked = isChecked;
-        //                    view.setChecked(isChecked);
-        //                }
-        //            });
-        //
-        //            UICacheModel uiCacheModel = new UICacheModel();
-        //            uiCacheModel.mCheckBox = checkBox;
-        //            uiCacheModel.trackView = view;
-        //
-        //            mUICache.put(trackUrl, uiCacheModel);
-        //
-        //            view.setChecked(true);
-        //
-        //            view.setOnClickListener(new View.OnClickListener()
-        //            {
-        //                @Override
-        //                public void onClick(View v)
-        //                {
-        //                    view.toggle();
-        //                    checkBox.toggle();
-        //                }
-        //            });
-        //
-        //            mListState.put(trackUrl, trackModel);
-        //
-        //            mTrackList.addView(view);
-        //        }
     }
 
     private void setTrackChecked(String url, boolean isChecked)

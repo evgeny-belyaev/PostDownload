@@ -105,7 +105,7 @@
     <color name="track_list_item_checked_artist_text_color">@color/color0</color>
     <color name="track_list_item_checked_title_text_color">@color/color2</color>
 
-    <color name="track_list_item_unchecked_artist_text_color">@color/color2</color>
+    <color name="track_list_item_unchecked_artist_text_color">@color/color3</color>
     <color name="track_list_item_unchecked_title_text_color">@color/color3</color>
 
     <color name="track_list_controls_download_default_background">#4E7AA3</color>
