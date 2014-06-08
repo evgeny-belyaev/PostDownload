@@ -68,7 +68,7 @@
                 style="@style/AppTheme.Controls.Field.Download"/>
 
             <ImageButton
-                android:id="@+id/controls_change_download_to"
+                android:id="@+id/controls_change_choose_dir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@id/controls_start_download"
@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/controls_start_download"
-                android:layout_alignTop="@id/controls_change_download_to"
+                android:layout_alignTop="@id/controls_change_choose_dir"
                 style="@style/AppTheme.Controls.Field.DownloadTo"
                 android:text="Сохранить в .../Music/Widek"/>
 
@@ -90,13 +90,14 @@
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/controls_start_download"
                 android:layout_below="@id/controls_download_to"
-                android:layout_alignBottom="@id/controls_change_download_to"
+                android:layout_alignBottom="@id/controls_change_choose_dir"
                 style="@style/AppTheme.Controls.Field.FreeSpace"
                 android:text="400 мб свободно"/>
 
         </RelativeLayout>
 
         <ImageButton
+            android:id="@+id/controls_expand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"

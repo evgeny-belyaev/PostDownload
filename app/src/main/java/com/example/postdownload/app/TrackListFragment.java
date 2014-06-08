@@ -24,6 +24,12 @@ public class TrackListFragment extends Fragment
 
     private List<PostItem> mPostItems = new ArrayList<>();
     private HashMap<String, PostItemState> mListState = new HashMap<>();
+    private ImageButton mChooseDir;
+    private TextView mDownloadTo;
+    private TextView mFreeSpace;
+    private ImageButton mExpand;
+
+    private boolean mExpanded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -42,6 +48,11 @@ public class TrackListFragment extends Fragment
         mDownloadButton = (Button)view.findViewById(R.id.controls_start_download);
         mTitle = (TextView)view.findViewById(R.id.title);
 
+        mExpand = (ImageButton)view.findViewById(R.id.controls_expand);
+        mChooseDir = (ImageButton)view.findViewById(R.id.controls_change_choose_dir);
+        mDownloadTo = (TextView)view.findViewById(R.id.controls_download_to);
+        mFreeSpace = (TextView)view.findViewById(R.id.controls_free_space);
+
         return view;
     }
 
@@ -52,6 +63,25 @@ public class TrackListFragment extends Fragment
 
         mTitle.setText(mPostDto.title);
 
+        mExpand.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (mExpanded)
+                {
+                    collapseSettings();
+                }
+                else
+                {
+                    expandSettings();
+                }
+
+                mExpanded = !mExpanded;
+            }
+        });
+
+        collapseSettings();
         fillList();
     }
 
@@ -109,4 +139,21 @@ public class TrackListFragment extends Fragment
         }
     }
 
+    private void collapseSettings()
+    {
+        mChooseDir.setVisibility(View.GONE);
+        mDownloadTo.setVisibility(View.GONE);
+        mFreeSpace.setVisibility(View.GONE);
+
+        mExpand.setActivated(false);
+    }
+
+    private void expandSettings()
+    {
+        mChooseDir.setVisibility(View.VISIBLE);
+        mDownloadTo.setVisibility(View.VISIBLE);
+        mFreeSpace.setVisibility(View.VISIBLE);
+
+        mExpand.setActivated(true);
+    }
 }

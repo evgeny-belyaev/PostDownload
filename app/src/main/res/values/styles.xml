@@ -22,13 +22,13 @@
 
     <style name="AppTheme.Controls"/>
 
-    <style name="AppTheme.Controls.Field"></style>
+    <style name="AppTheme.Controls.Field"/>
 
     <style name="AppTheme.Controls.Field.ChooseDir">
-        <item name="android:src">@drawable/ic_action_sd_storage</item>
         <item name="android:padding">8dp</item>
         <item name="android:layout_marginTop">8dp</item>
-        <item name="android:background">@android:drawable/screen_background_light_transparent</item>
+        <item name="android:src">@drawable/ic_action_sd_storage</item>
+        <item name="android:background">@drawable/track_list_controls_button_background</item>
     </style>
 
     <style name="AppTheme.Controls.Field.DownloadTo">
@@ -41,15 +41,18 @@
     </style>
 
     <style name="AppTheme.Controls.Field.Expand">
-        <item name="android:background">@null</item>
-        <item name="android:src">@drawable/ic_action_expand</item>
-        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
+        <item name="android:src">@drawable/track_list_controls_expand_src</item>
+        <item name="android:background">@drawable/track_list_controls_button_background</item>
     </style>
 
     <style name="AppTheme.Controls.Field.Download">
-        <item name="android:background">@android:drawable/screen_background_light_transparent</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:background">@drawable/track_list_controls_download_background</item>
+        <item name="android:textColor">@color/track_list_controls_download_text_color</item>
     </style>
 
     <style name="AppTheme.Controls.Frame">
@@ -63,7 +66,7 @@
     <style name="AppTheme.TrackList"/>
 
     <style name="AppTheme.TrackList.Layout">
-        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
 
     <style name="AppTheme.TrackList.Scroll">
@@ -104,6 +107,15 @@
 
     <color name="track_list_item_unchecked_artist_text_color">@color/color2</color>
     <color name="track_list_item_unchecked_title_text_color">@color/color3</color>
+
+    <color name="track_list_controls_download_default_background">#4E7AA3</color>
+    <color name="track_list_controls_download_pressed_background">#3D638B</color>
+
+    <color name="track_list_controls_download_default_text_color">#FFFFFF</color>
+    <color name="track_list_controls_download_pressed_text_color">#D9E1E8</color>
+
+    <color name="track_list_controls_button_default_background">#dde4ec</color>
+    <color name="track_list_controls_button_pressed_background">#edf4fc</color>
 
     <color name="color0">#000000</color>
     <color name="color1">#E8EFF7</color>
