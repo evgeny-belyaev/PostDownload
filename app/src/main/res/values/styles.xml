@@ -22,6 +22,8 @@
 
     <style name="AppTheme.Controls"/>
 
+    <style name="AppTheme.Controls.Field"></style>
+
     <style name="AppTheme.Controls.Field.ChooseDir">
         <item name="android:src">@drawable/ic_action_sd_storage</item>
         <item name="android:padding">8dp</item>
@@ -50,8 +52,6 @@
         <item name="android:background">@android:drawable/screen_background_light_transparent</item>
     </style>
 
-    <style name="AppTheme.Controls.Field"></style>
-
     <style name="AppTheme.Controls.Frame">
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
@@ -62,7 +62,11 @@
 
     <style name="AppTheme.TrackList"/>
 
-    <style name="AppTheme.TrackList.List">
+    <style name="AppTheme.TrackList.Layout">
+        <item name="android:paddingRight">8dp</item>
+    </style>
+
+    <style name="AppTheme.TrackList.Scroll">
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
         <item name="android:paddingLeft">16dp</item>
@@ -90,6 +94,8 @@
     </style>
 
     <style name="AppTheme.TrackList.Item.CheckBox"/>
+
+    <!---->
 
     <color name="track_list_item_pressed_background">@color/color1</color>
 
