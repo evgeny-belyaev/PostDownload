@@ -3,5 +3,9 @@
 
     <string name="app_name">PostDownload</string>
     <string name="hello_world">Hello world!</string>
+    <string name="confirm">confirm</string>
+    <string name="cancel">cancel</string>
+    <string name="create_dir_title">Create folder</string>
+    <string name="create_dir_dialog_name_hint">Enter folder name</string>
 
 </resources>

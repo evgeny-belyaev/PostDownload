@@ -44,13 +44,13 @@ import java.util.Collections;
 public class DirectoryChooserFragment extends android.support.v4.app.DialogFragment
 {
     public static final String KEY_CURRENT_DIRECTORY = "CURRENT_DIRECTORY";
-    private static final String ARG_NEW_DIRECTORY_NAME = "NEW_DIRECTORY_NAME";
-    private static final String ARG_INITIAL_DIRECTORY = "INITIAL_DIRECTORY";
+    public static final String ARG_NEW_DIRECTORY_NAME = "NEW_DIRECTORY_NAME";
+    public static final String ARG_INITIAL_DIRECTORY = "INITIAL_DIRECTORY";
     private static final String TAG = DirectoryChooserFragment.class.getSimpleName();
-    private String mNewDirectoryName;
+    protected String mNewDirectoryName;
     private String mInitialDirectory;
 
-    private OnFragmentInteractionListener mListener;
+    protected OnFragmentInteractionListener mListener;
 
     private Button mBtnConfirm;
     private Button mBtnCancel;
@@ -245,8 +245,8 @@ public class DirectoryChooserFragment extends android.support.v4.app.DialogFragm
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+//            throw new ClassCastException(activity.toString()
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -301,7 +301,7 @@ public class DirectoryChooserFragment extends android.support.v4.app.DialogFragm
      * Shows a confirmation dialog that asks the user if he wants to create a
      * new folder.
      */
-    private void openNewFolderDialog() {
+    protected void openNewFolderDialog() {
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.create_folder_label)
                 .setMessage(
@@ -444,7 +444,7 @@ public class DirectoryChooserFragment extends android.support.v4.app.DialogFragm
      * Creates a new folder in the current directory with the name
      * CREATE_DIRECTORY_NAME.
      */
-    private int createFolder() {
+    protected int createFolder() {
         if (mNewDirectoryName != null && mSelectedDir != null
                 && mSelectedDir.canWrite()) {
             File newDir = new File(mSelectedDir, mNewDirectoryName);

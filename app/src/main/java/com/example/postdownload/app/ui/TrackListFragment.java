@@ -1,19 +1,23 @@
-package com.example.postdownload.app;
+package com.example.postdownload.app.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.example.postdownload.app.R;
+import com.example.postdownload.app.StringHelpers;
+import com.example.postdownload.app.TrackModel;
+import com.example.postdownload.app.UICacheModel;
 import com.example.postdownload.app.core.DownloadProgress;
 import com.example.postdownload.app.core.PostDownloadTaskFragment;
 import com.example.postdownload.app.core.PostDto;
 import com.example.postdownload.app.core.TrackDto;
 import com.example.postdownload.app.lib.FragmentHelper;
 import com.example.postdownload.app.lib.SubscriptionHelper;
-import net.rdrei.android.dirchooser.DirectoryChooserFragment;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -46,7 +50,7 @@ public class TrackListFragment extends Fragment
     private SubscriptionHelper mSubscriptionHelper;
     private PostDownloadTaskFragment mDownloader;
     private String mPostTitle;
-    private DirectoryChooserFragment mDirectoryPicker;
+    private MyDirectoryChooserFragment mDirectoryPicker;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -109,7 +113,10 @@ public class TrackListFragment extends Fragment
         mDownloadTo = (TextView)view.findViewById(R.id.controls_download_to);
         mFreeSpace = (TextView)view.findViewById(R.id.controls_free_space);
 
-        mDirectoryPicker = DirectoryChooserFragment.newInstance("bla", null);
+        String pathToMusic = Environment
+            .getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+            .getAbsolutePath();
+        mDirectoryPicker = MyDirectoryChooserFragment.newInstance(pathToMusic);
 
         return view;
     }
@@ -139,17 +146,7 @@ public class TrackListFragment extends Fragment
             }
         });
 
-        mChooseDir.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mDirectoryPicker.show(getFragmentManager(), null);
-            }
-        });
-
         collapseSettings();
-
         fillList();
     }
 
@@ -157,6 +154,19 @@ public class TrackListFragment extends Fragment
     public void onResume()
     {
         super.onResume();
+
+        mSubscriptionHelper.manage(
+            ViewObservable
+                .clicks(mChooseDir, false)
+                .subscribe(new Action1<ImageButton>()
+                {
+                    @Override
+                    public void call(ImageButton imageButton)
+                    {
+                        mDirectoryPicker.show(getFragmentManager(), "dirpicker");
+                    }
+                })
+        );
 
         mSubscriptionHelper.manage(
             ViewObservable

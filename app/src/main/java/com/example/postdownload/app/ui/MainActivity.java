@@ -1,4 +1,4 @@
-package com.example.postdownload.app;
+package com.example.postdownload.app.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+import com.example.postdownload.app.PostItemState;
+import com.example.postdownload.app.R;
 import com.example.postdownload.app.core.PostDownloadTaskFragment;
 import com.example.postdownload.app.core.PostDto;
 import com.example.postdownload.app.core.PostItem;

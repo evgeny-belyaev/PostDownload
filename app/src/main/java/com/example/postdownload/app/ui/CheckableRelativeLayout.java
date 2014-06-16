@@ -1,4 +1,4 @@
-package com.example.postdownload.app;
+package com.example.postdownload.app.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
