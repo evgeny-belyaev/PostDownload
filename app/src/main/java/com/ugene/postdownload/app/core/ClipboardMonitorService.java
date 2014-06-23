@@ -1,4 +1,4 @@
-package com.example.postdownload.app.core;
+package com.ugene.postdownload.app.core;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,8 +11,8 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
-import com.example.postdownload.app.R;
-import com.example.postdownload.app.ui.MainActivity;
+import com.ugene.postdownload.app.R;
+import com.ugene.postdownload.app.ui.MainActivity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -131,7 +131,7 @@ public class ClipboardMonitorService extends Service
                 }
                 catch (MalformedURLException e)
                 {
-                    return; // ignore all errors
+                    // ignore all errors
                 }
             }
         };

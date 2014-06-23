@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.example.postdownload.app.ui.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ugene.postdownload.app.ui.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                       android:layout_width="match_parent"
                                                       android:layout_height="wrap_content"
                                                       style="@style/AppTheme.TrackList.Item">
@@ -43,4 +43,4 @@
         android:visibility="gone"
         style="?android:attr/progressBarStyleHorizontal"/>
 
-</com.example.postdownload.app.ui.CheckableRelativeLayout>
+</com.ugene.postdownload.app.ui.CheckableRelativeLayout>

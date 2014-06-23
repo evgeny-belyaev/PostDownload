@@ -1,4 +1,4 @@
-package com.example.postdownload.app;
+package com.ugene.postdownload.app;
 
 public class StringHelpers
 {

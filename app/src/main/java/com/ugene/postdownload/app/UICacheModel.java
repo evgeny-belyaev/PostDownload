@@ -1,4 +1,4 @@
-package com.example.postdownload.app;
+package com.ugene.postdownload.app;
 
 import android.view.View;
 import android.widget.CheckBox;

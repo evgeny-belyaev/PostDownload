@@ -1,4 +1,4 @@
-package com.example.postdownload.app.lib;
+package com.ugene.postdownload.app.lib;
 
 import android.os.Environment;
 import android.util.Log;
@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+@SuppressWarnings("ALL")
 public class StorageUtils
 {
 /*

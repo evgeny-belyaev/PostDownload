@@ -1,4 +1,4 @@
-package com.example.postdownload.app.ui;
+package com.ugene.postdownload.app.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,16 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.example.postdownload.app.R;
-import com.example.postdownload.app.StringHelpers;
-import com.example.postdownload.app.TrackModel;
-import com.example.postdownload.app.UICacheModel;
-import com.example.postdownload.app.core.DownloadProgress;
-import com.example.postdownload.app.core.PostDownloadTaskFragment;
-import com.example.postdownload.app.core.PostDto;
-import com.example.postdownload.app.core.TrackDto;
-import com.example.postdownload.app.lib.FragmentHelper;
-import com.example.postdownload.app.lib.SubscriptionHelper;
+import com.ugene.postdownload.app.R;
+import com.ugene.postdownload.app.StringHelpers;
+import com.ugene.postdownload.app.TrackModel;
+import com.ugene.postdownload.app.UICacheModel;
+import com.ugene.postdownload.app.core.DownloadProgress;
+import com.ugene.postdownload.app.core.PostDownloadTaskFragment;
+import com.ugene.postdownload.app.core.PostDto;
+import com.ugene.postdownload.app.core.TrackDto;
+import com.ugene.postdownload.app.lib.FragmentHelper;
+import com.ugene.postdownload.app.lib.SubscriptionHelper;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -263,7 +263,6 @@ public class TrackListFragment extends Fragment
                         @Override
                         public void call(Throwable throwable)
                         {
-                            int i = 5;
                         }
                     })
         );
@@ -328,7 +327,7 @@ public class TrackListFragment extends Fragment
                     return trackModel1.index - trackModel2.index;
                 }
             })
-            .toBlockingObservable()
+            .toBlocking()
             .forEach(new Action1<List<TrackModel>>()
             {
                 @Override
@@ -399,7 +398,7 @@ public class TrackListFragment extends Fragment
                 }
             })
             .count()
-            .toBlockingObservable()
+            .toBlocking()
             .first();
 
         mDownloadButton.setText("Загрузить " + StringHelpers.declOfNum(number, new String[] {

@@ -1,6 +1,6 @@
-package com.example.postdownload.app;
+package com.ugene.postdownload.app;
 
-import com.example.postdownload.app.core.TrackDto;
+import com.ugene.postdownload.app.core.TrackDto;
 
 import java.io.Serializable;
 

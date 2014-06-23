@@ -1,10 +1,11 @@
-package com.example.postdownload.app.lib;
+package com.ugene.postdownload.app.lib;
 
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import rx.functions.Func0;
 
+@SuppressWarnings("UnusedDeclaration")
 public class FragmentHelper
 {
 

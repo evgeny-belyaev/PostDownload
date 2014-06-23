@@ -1,9 +1,9 @@
-package com.example.postdownload.app.core;
+package com.ugene.postdownload.app.core;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import com.example.postdownload.app.TrackModel;
-import com.example.postdownload.app.lib.SubscriptionHelper;
+import com.ugene.postdownload.app.TrackModel;
+import com.ugene.postdownload.app.lib.SubscriptionHelper;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action0;

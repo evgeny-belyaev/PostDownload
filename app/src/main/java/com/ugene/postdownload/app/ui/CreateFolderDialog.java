@@ -1,4 +1,4 @@
-package com.example.postdownload.app.ui;
+package com.ugene.postdownload.app.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,7 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import com.example.postdownload.app.R;
+import com.ugene.postdownload.app.R;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

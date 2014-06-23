@@ -53,7 +53,7 @@ public class DirectoryChooserActivity extends FragmentActivity implements
     }
 
     /* package */void setupActionBar() {
-        // there might not be an ActionBar, for example when started in Theme.Holo.Dialog.NoActionBar theme
+        // there might not be an ActionBar, for ugene when started in Theme.Holo.Dialog.NoActionBar theme
         @SuppressLint("AppCompatMethod") final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

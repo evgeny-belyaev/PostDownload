@@ -1,4 +1,4 @@
-package com.example.postdownload.app.ui;
+package com.ugene.postdownload.app.ui;
 
 import android.support.v4.app.Fragment;
 

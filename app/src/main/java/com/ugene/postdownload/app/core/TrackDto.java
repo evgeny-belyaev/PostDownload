@@ -1,4 +1,4 @@
-package com.example.postdownload.app.core;
+package com.ugene.postdownload.app.core;
 
 import java.io.Serializable;
 import java.net.URL;
