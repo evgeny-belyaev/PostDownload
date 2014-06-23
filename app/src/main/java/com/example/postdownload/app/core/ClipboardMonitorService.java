@@ -11,8 +11,8 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
-import com.example.postdownload.app.ui.MainActivity;
 import com.example.postdownload.app.R;
+import com.example.postdownload.app.ui.MainActivity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -81,7 +81,7 @@ public class ClipboardMonitorService extends Service
                     @Override
                     public void call(Throwable throwable)
                     {
-                        // do nothing
+
                     }
                 }
             );

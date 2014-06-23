@@ -26,6 +26,7 @@ import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.functions.Func2;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -34,7 +35,8 @@ import java.util.List;
 public class TrackListFragment extends Fragment
 {
     private static final String BUNDLE_KEY_STATE = "state";
-    private static final java.lang.String BUNDLE_KEY_TITLE = "title";
+    private static final String BUNDLE_KEY_TITLE = "title";
+    private static final String BUNDLE_KEY_SAVE_PATH = "savePath";
     private LinearLayout mTrackList;
     private Button mDownloadButton;
     private TextView mTitle;
@@ -52,6 +54,8 @@ public class TrackListFragment extends Fragment
     private String mPostTitle;
     private MyDirectoryChooserFragment mDirectoryPicker;
 
+    private String mSavePath;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -63,12 +67,16 @@ public class TrackListFragment extends Fragment
         {
             mListState = (HashMap<String, TrackModel>)savedInstanceState.getSerializable(BUNDLE_KEY_STATE);
             mPostTitle = savedInstanceState.getString(BUNDLE_KEY_TITLE);
+            mSavePath = savedInstanceState.getString(BUNDLE_KEY_SAVE_PATH);
         }
         else
         {
             PostDto postDto = MainActivity.getPost(getActivity().getIntent());
             mPostTitle = postDto.title;
             createListState(postDto);
+            mSavePath = Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+                .getAbsolutePath();
         }
 
         mDownloader = FragmentHelper.createOrRestore(getFragmentManager(), "downloader", new Func0<PostDownloadTaskFragment>()
@@ -79,6 +87,10 @@ public class TrackListFragment extends Fragment
                 return PostDownloadTaskFragment.create();
             }
         });
+
+//        File path = new File(mSavePath);
+
+        mDirectoryPicker = MyDirectoryChooserFragment.newInstance(mSavePath, "");
     }
 
     private void createListState(PostDto postDto)
@@ -113,11 +125,6 @@ public class TrackListFragment extends Fragment
         mDownloadTo = (TextView)view.findViewById(R.id.controls_download_to);
         mFreeSpace = (TextView)view.findViewById(R.id.controls_free_space);
 
-        String pathToMusic = Environment
-            .getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-            .getAbsolutePath();
-        mDirectoryPicker = MyDirectoryChooserFragment.newInstance(pathToMusic);
-
         return view;
     }
 
@@ -127,6 +134,8 @@ public class TrackListFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
 
         mTitle.setText(mPostTitle);
+
+        updateDownloadTo();
 
         mExpand.setOnClickListener(new View.OnClickListener()
         {
@@ -150,6 +159,12 @@ public class TrackListFragment extends Fragment
         fillList();
     }
 
+    private void updateDownloadTo()
+    {
+        File f = new File(mSavePath);
+        mDownloadTo.setText("Сохранить в .../" +  f.getParentFile().getName() + "/" + f.getName());
+    }
+
     @Override
     public void onResume()
     {
@@ -164,6 +179,21 @@ public class TrackListFragment extends Fragment
                     public void call(ImageButton imageButton)
                     {
                         mDirectoryPicker.show(getFragmentManager(), "dirpicker");
+                    }
+                })
+        );
+
+        mSubscriptionHelper.manage(
+            mDirectoryPicker
+                .observeDirectorySelected()
+                .subscribe(new Action1<String>()
+                {
+                    @Override
+                    public void call(String path)
+                    {
+                        mSavePath = path;
+                        updateDownloadTo();
+                        mDirectoryPicker.updateInitialDirectory(path, "");
                     }
                 })
         );
@@ -376,7 +406,7 @@ public class TrackListFragment extends Fragment
 
         outState.putSerializable(BUNDLE_KEY_STATE, mListState);
         outState.putString(BUNDLE_KEY_TITLE, mPostTitle);
+        outState.putString(BUNDLE_KEY_SAVE_PATH, mSavePath);
     }
-
 }
 

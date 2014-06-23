@@ -73,7 +73,8 @@
                 android:layout_alignLeft="@id/controls_start_download"
                 android:layout_alignTop="@id/controls_change_choose_dir"
                 style="@style/AppTheme.Controls.Field.DownloadTo"
-                android:text="Сохранить в .../Music/Widek"/>
+                android:maxLines="1"
+                android:ellipsize="marquee"/>
 
             <TextView
                 android:id="@+id/controls_free_space"

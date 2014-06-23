@@ -20,14 +20,21 @@ public class MyDirectoryChooserFragment extends DirectoryChooserFragment
         mDirectorySelectedSubject = PublishSubject.create();
     }
 
-    public static MyDirectoryChooserFragment newInstance(String initialDirectory)
+    public static MyDirectoryChooserFragment newInstance(String initialDirectory, String newDirectoryName)
     {
         MyDirectoryChooserFragment fragment = new MyDirectoryChooserFragment();
         Bundle args = new Bundle();
-        args.putString(DirectoryChooserFragment.ARG_NEW_DIRECTORY_NAME, "");
+        args.putString(DirectoryChooserFragment.ARG_NEW_DIRECTORY_NAME, newDirectoryName);
         args.putString(DirectoryChooserFragment.ARG_INITIAL_DIRECTORY, initialDirectory);
+
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void updateInitialDirectory(String initialDirectory, String newDirectoryName)
+    {
+        mInitialDirectory = initialDirectory;
+        mNewDirectoryName = newDirectoryName;
     }
 
     @Override
@@ -57,12 +64,13 @@ public class MyDirectoryChooserFragment extends DirectoryChooserFragment
             public void onSelectDirectory(@NonNull String path)
             {
                 mDirectorySelectedSubject.onNext(path);
+                dismiss();
             }
 
             @Override
             public void onCancelChooser()
             {
-
+                dismiss();
             }
         };
     }
