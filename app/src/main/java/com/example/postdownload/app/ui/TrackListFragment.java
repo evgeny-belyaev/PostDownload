@@ -3,6 +3,7 @@ package com.example.postdownload.app.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StatFs;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -88,7 +90,7 @@ public class TrackListFragment extends Fragment
             }
         });
 
-//        File path = new File(mSavePath);
+        //        File path = new File(mSavePath);
 
         mDirectoryPicker = MyDirectoryChooserFragment.newInstance(mSavePath, "");
     }
@@ -162,7 +164,27 @@ public class TrackListFragment extends Fragment
     private void updateDownloadTo()
     {
         File f = new File(mSavePath);
-        mDownloadTo.setText("Сохранить в .../" +  f.getParentFile().getName() + "/" + f.getName());
+        mDownloadTo.setText("Сохранить в .../" + f.getParentFile().getName() + "/" + f.getName());
+
+        updateFreeSpace();
+    }
+
+    private void updateFreeSpace()
+    {
+        StatFs stat = new StatFs(mSavePath);
+        long bytesAvailable = (long)stat.getBlockSize() * (long)stat.getAvailableBlocks();
+        double mbFree = (double)bytesAvailable / (1024 * 1024);
+
+        if (mbFree > 1024)
+        {
+            double gbFree = mbFree / 1024;
+            DecimalFormat df = new DecimalFormat("0.0");
+            mFreeSpace.setText(String.format("%s ГБ свободно", df.format(gbFree)));
+        }
+        else
+        {
+            mFreeSpace.setText(mbFree + " МБ свободно");
+        }
     }
 
     @Override
@@ -229,7 +251,7 @@ public class TrackListFragment extends Fragment
                                 }
                             }
 
-                            //                            mDownloader.start(values);
+                            mDownloader.start(values);
                         }
                     },
                     new Action1<Throwable>()
