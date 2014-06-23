@@ -1,6 +1,8 @@
 package com.ugene.postdownload.app.ui;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
@@ -13,17 +15,13 @@ import com.ugene.postdownload.app.R;
 import com.ugene.postdownload.app.StringHelpers;
 import com.ugene.postdownload.app.TrackModel;
 import com.ugene.postdownload.app.UICacheModel;
-import com.ugene.postdownload.app.core.DownloadProgress;
 import com.ugene.postdownload.app.core.PostDownloadTaskFragment;
 import com.ugene.postdownload.app.core.PostDto;
 import com.ugene.postdownload.app.core.TrackDto;
-import com.ugene.postdownload.app.lib.FragmentHelper;
 import com.ugene.postdownload.app.lib.SubscriptionHelper;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.functions.Func2;
 
@@ -57,6 +55,7 @@ public class TrackListFragment extends Fragment
     private MyDirectoryChooserFragment mDirectoryPicker;
 
     private String mSavePath;
+    private DownloadManager mDownloadManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -81,14 +80,16 @@ public class TrackListFragment extends Fragment
                 .getAbsolutePath();
         }
 
-        mDownloader = FragmentHelper.createOrRestore(getFragmentManager(), "downloader", new Func0<PostDownloadTaskFragment>()
-        {
-            @Override
-            public PostDownloadTaskFragment call()
-            {
-                return PostDownloadTaskFragment.create();
-            }
-        });
+        mDownloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+
+        //        mDownloader = FragmentHelper.createOrRestore(getFragmentManager(), "downloader", new Func0<PostDownloadTaskFragment>()
+        //        {
+        //            @Override
+        //            public PostDownloadTaskFragment call()
+        //            {
+        //                return PostDownloadTaskFragment.create();
+        //            }
+        //        });
 
         mDirectoryPicker = MyDirectoryChooserFragment.newInstance(mSavePath, "");
     }
@@ -255,6 +256,23 @@ public class TrackListFragment extends Fragment
                             //                                }
                             //                            }
 
+                            for (TrackModel trackModel : mListState.values())
+                            {
+                                if (!trackModel.isChecked)
+                                {
+                                    continue;
+                                }
+
+                                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(trackModel.mTrackDto.url
+                                    .toString()));
+                                String fileName = String.format("%s - %s.mp3", trackModel.mTrackDto.artist, trackModel.mTrackDto.title);
+                                request.setDestinationUri(Uri.withAppendedPath(Uri.parse("file://" + mSavePath), fileName));
+                                request.setTitle(fileName);
+                                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+
+                                mDownloadManager.enqueue(request);
+                            }
+
                             mDownloader.start(values);
                         }
                     },
@@ -267,42 +285,42 @@ public class TrackListFragment extends Fragment
                     })
         );
 
-        mSubscriptionHelper.manage(
-            mDownloader
-                .observeDownloadButtonState()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>()
-                {
-                    @Override
-                    public void call(Boolean isEnabled)
-                    {
-                        mDownloadButton.setEnabled(isEnabled);
-                    }
-                })
-        );
+        //        mSubscriptionHelper.manage(
+        //            mDownloader
+        //                .observeDownloadButtonState()
+        //                .observeOn(AndroidSchedulers.mainThread())
+        //                .subscribe(new Action1<Boolean>()
+        //                {
+        //                    @Override
+        //                    public void call(Boolean isEnabled)
+        //                    {
+        //                        mDownloadButton.setEnabled(isEnabled);
+        //                    }
+        //                })
+        //        );
 
-        mSubscriptionHelper.manage(
-            mDownloader
-                .observeProgress()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<DownloadProgress>()
-                {
-                    @Override
-                    public void call(DownloadProgress progress)
-                    {
-                        //                        String postItemKey = progress.url.toString();
-                        //                        ProgressBar progressBar = mProgressBars.get(postItemKey);
-                        //                        int value = progress.progress;
-                        //
-                        //                        if (value > 0)
-                        //                        {
-                        //                            progressBar.setVisibility(View.VISIBLE);
-                        //                        }
-                        //
-                        //                        progressBar.setProgress(value);
-                    }
-                })
-        );
+        //        mSubscriptionHelper.manage(
+        //            mDownloader
+        //                .observeProgress()
+        //                .observeOn(AndroidSchedulers.mainThread())
+        //                .subscribe(new Action1<DownloadProgress>()
+        //                {
+        //                    @Override
+        //                    public void call(DownloadProgress progress)
+        //                    {
+        //                        //                        String postItemKey = progress.url.toString();
+        //                        //                        ProgressBar progressBar = mProgressBars.get(postItemKey);
+        //                        //                        int value = progress.progress;
+        //                        //
+        //                        //                        if (value > 0)
+        //                        //                        {
+        //                        //                            progressBar.setVisibility(View.VISIBLE);
+        //                        //                        }
+        //                        //
+        //                        //                        progressBar.setProgress(value);
+        //                    }
+        //                })
+        //        );
     }
 
     @Override

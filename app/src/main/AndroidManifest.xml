@@ -26,7 +26,7 @@
 
         <activity
             android:name="com.ugene.postdownload.app.ui.MainActivity"
-            android:label="DownloadActivity"/>
+            android:label="@string/main_activity_title"/>
 
         <activity android:name="net.rdrei.android.dirchooser.DirectoryChooserActivity" >
         </activity>

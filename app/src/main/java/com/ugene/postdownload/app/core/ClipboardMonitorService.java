@@ -53,6 +53,8 @@ public class ClipboardMonitorService extends Service
                 @Override
                 public Observable<PostDto> call(URL url)
                 {
+                    Log.d("ClipboardMonitorService", url.toString());
+
                     return
                         downloadPost(url)
                             .map(new Func1<Document, PostDto>()
@@ -81,7 +83,7 @@ public class ClipboardMonitorService extends Service
                     @Override
                     public void call(Throwable throwable)
                     {
-
+                        int i = 5;
                     }
                 }
             );
