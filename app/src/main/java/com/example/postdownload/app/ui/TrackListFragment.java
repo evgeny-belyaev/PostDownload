@@ -39,6 +39,7 @@ public class TrackListFragment extends Fragment
     private static final String BUNDLE_KEY_STATE = "state";
     private static final String BUNDLE_KEY_TITLE = "title";
     private static final String BUNDLE_KEY_SAVE_PATH = "savePath";
+    private static final String BUNDLE_KEY_SETTINGS_EXPANDED = "settingsExpanded";
     private LinearLayout mTrackList;
     private Button mDownloadButton;
     private TextView mTitle;
@@ -50,7 +51,6 @@ public class TrackListFragment extends Fragment
     private TextView mFreeSpace;
     private ImageButton mExpand;
 
-    private boolean mExpanded = false;
     private SubscriptionHelper mSubscriptionHelper;
     private PostDownloadTaskFragment mDownloader;
     private String mPostTitle;
@@ -144,7 +144,7 @@ public class TrackListFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                if (mExpanded)
+                if (mExpand.isActivated())
                 {
                     collapseSettings();
                 }
@@ -152,12 +152,18 @@ public class TrackListFragment extends Fragment
                 {
                     expandSettings();
                 }
-
-                mExpanded = !mExpanded;
             }
         });
 
-        collapseSettings();
+        if (savedInstanceState != null && savedInstanceState.getBoolean(BUNDLE_KEY_SETTINGS_EXPANDED))
+        {
+            expandSettings();
+        }
+        else
+        {
+            collapseSettings();
+        }
+
         fillList();
     }
 
@@ -241,15 +247,15 @@ public class TrackListFragment extends Fragment
                                 }
                             });
 
-                            for (UICacheModel uiCacheModel : mUICache.values())
-                            {
-                                CheckableRelativeLayout trackView = (CheckableRelativeLayout)uiCacheModel.trackView;
-
-                                if (!trackView.isChecked())
-                                {
-                                    mTrackList.removeView(uiCacheModel.trackView);
-                                }
-                            }
+                            //                            for (UICacheModel uiCacheModel : mUICache.values())
+                            //                            {
+                            //                                CheckableRelativeLayout trackView = (CheckableRelativeLayout)uiCacheModel.trackView;
+                            //
+                            //                                if (!trackView.isChecked())
+                            //                                {
+                            //                                    mTrackList.removeView(uiCacheModel.trackView);
+                            //                                }
+                            //                            }
 
                             mDownloader.start(values);
                         }
@@ -429,6 +435,7 @@ public class TrackListFragment extends Fragment
         outState.putSerializable(BUNDLE_KEY_STATE, mListState);
         outState.putString(BUNDLE_KEY_TITLE, mPostTitle);
         outState.putString(BUNDLE_KEY_SAVE_PATH, mSavePath);
+        outState.putBoolean(BUNDLE_KEY_SETTINGS_EXPANDED, mExpand.isActivated());
     }
 }
 
