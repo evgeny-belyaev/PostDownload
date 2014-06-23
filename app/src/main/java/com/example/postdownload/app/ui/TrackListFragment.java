@@ -90,8 +90,6 @@ public class TrackListFragment extends Fragment
             }
         });
 
-        //        File path = new File(mSavePath);
-
         mDirectoryPicker = MyDirectoryChooserFragment.newInstance(mSavePath, "");
     }
 
