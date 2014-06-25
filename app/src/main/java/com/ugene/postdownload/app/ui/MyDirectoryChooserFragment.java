@@ -46,16 +46,26 @@ public class MyDirectoryChooserFragment extends DirectoryChooserFragment
         mCompositeSubscription.add(
             mCreateFolderDialog
                 .observe()
-                .subscribe(new Action1<String>()
-                {
-                    @Override
-                    public void call(String name)
+                .subscribe(
+                    new Action1<String>()
                     {
-                        mNewDirectoryName = name;
-                        int msg = createFolder();
-                        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void call(String name)
+                        {
+                            mNewDirectoryName = name;
+                            int msg = createFolder();
+                            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    new Action1<Throwable>()
+                    {
+                        @Override
+                        public void call(Throwable throwable)
+                        {
+                            int i = 45;
+                        }
                     }
-                })
+                )
         );
 
         mListener = new OnFragmentInteractionListener()
@@ -80,6 +90,7 @@ public class MyDirectoryChooserFragment extends DirectoryChooserFragment
     {
         super.onPause();
 
+        mCreateFolderDialog = null;
         mCompositeSubscription.unsubscribe();
     }
 

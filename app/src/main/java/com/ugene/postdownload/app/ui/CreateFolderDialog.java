@@ -38,6 +38,7 @@ public class CreateFolderDialog extends DialogFragment
                 public void onClick(DialogInterface dialog, int id)
                 {
                     mSubject.onNext(name.getText().toString());
+                    dismiss();
                 }
             })
             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
@@ -45,6 +46,7 @@ public class CreateFolderDialog extends DialogFragment
                 public void onClick(DialogInterface dialog, int id)
                 {
                     // User cancelled the dialog
+                    dismiss();
                 }
             });
 
