@@ -7,6 +7,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
@@ -48,6 +50,14 @@ public class ClipboardMonitorService extends Service
         mTrigger = PublishSubject.create();
 
         mSubscription = mTrigger
+            .filter(new Func1<URL, Boolean>()
+            {
+                @Override
+                public Boolean call(URL url)
+                {
+                    return isOnline(ClipboardMonitorService.this);
+                }
+            })
             .flatMap(new Func1<URL, Observable<PostDto>>()
             {
                 @Override
@@ -69,6 +79,7 @@ public class ClipboardMonitorService extends Service
             })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .retry()
             .subscribe(
                 new Action1<PostDto>()
                 {
@@ -220,5 +231,13 @@ public class ClipboardMonitorService extends Service
         }
 
         return postDto;
+    }
+
+    public static boolean isOnline(Context ctx)
+    {
+        ConnectivityManager cm = (ConnectivityManager)ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        return netInfo != null && netInfo.isConnected();
     }
 }
