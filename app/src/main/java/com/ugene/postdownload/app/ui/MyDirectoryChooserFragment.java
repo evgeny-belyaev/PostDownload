@@ -92,6 +92,7 @@ public class MyDirectoryChooserFragment extends DirectoryChooserFragment
 
         mCreateFolderDialog = null;
         mCompositeSubscription.unsubscribe();
+        mCompositeSubscription = new CompositeSubscription();
     }
 
     @Override

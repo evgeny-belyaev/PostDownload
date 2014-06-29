@@ -272,8 +272,6 @@ public class TrackListFragment extends Fragment
 
                                 mDownloadManager.enqueue(request);
                             }
-
-                            mDownloader.start(values);
                         }
                     },
                     new Action1<Throwable>()
