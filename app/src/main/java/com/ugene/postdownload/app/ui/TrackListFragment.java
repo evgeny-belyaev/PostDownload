@@ -254,6 +254,10 @@ public class TrackListFragment extends Fragment
 
                                 mDownloadManager.enqueue(request);
                             }
+
+                            Toast.makeText(getActivity(), getString(R.string.download_started), Toast.LENGTH_LONG).show();
+
+                            getActivity().finish();
                         }
                     },
                     new Action1<Throwable>()

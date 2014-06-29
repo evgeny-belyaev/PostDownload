@@ -20,5 +20,6 @@
     <string name="bugsence_api_key">e885e3ed</string>
     <string name="press_to_download">Нажмите чтобы загрузить</string>
     <string name="dowload_all">Загрузить все</string>
+    <string name="download_started">Загрузка началась</string>
 
 </resources>

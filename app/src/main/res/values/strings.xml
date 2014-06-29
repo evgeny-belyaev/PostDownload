@@ -20,5 +20,6 @@
     <string name="bugsence_api_key">e885e3ed</string>
     <string name="press_to_download">Press to download</string>
     <string name="dowload_all">Download all</string>
+    <string name="download_started">Download started</string>
 
 </resources>
