@@ -1,4 +1,4 @@
-package com.ugene.postdownload.app.lib;
+package com.ugene.postdownload.app.core;
 
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;

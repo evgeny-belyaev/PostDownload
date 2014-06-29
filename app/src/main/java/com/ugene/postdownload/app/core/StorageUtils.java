@@ -1,4 +1,4 @@
-package com.ugene.postdownload.app.lib;
+package com.ugene.postdownload.app.core;
 
 import android.os.Environment;
 import android.util.Log;

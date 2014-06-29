@@ -12,12 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.ugene.postdownload.app.R;
-import com.ugene.postdownload.app.StringHelpers;
-import com.ugene.postdownload.app.TrackModel;
-import com.ugene.postdownload.app.UICacheModel;
+import com.ugene.postdownload.app.core.StringHelpers;
+import com.ugene.postdownload.app.core.TrackModel;
 import com.ugene.postdownload.app.core.PostDto;
 import com.ugene.postdownload.app.core.TrackDto;
-import com.ugene.postdownload.app.lib.SubscriptionHelper;
+import com.ugene.postdownload.app.core.SubscriptionHelper;
+import com.ugene.postdownload.app.ui.picker.MyDirectoryChooserFragment;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.functions.Action1;
@@ -42,7 +42,6 @@ public class TrackListFragment extends Fragment
     private TextView mTitle;
 
     private HashMap<String, TrackModel> mListState = new HashMap<>();
-    private HashMap<String, UICacheModel> mUICache = new HashMap<>();
     private ImageButton mChooseDir;
     private TextView mDownloadTo;
     private TextView mFreeSpace;
@@ -79,15 +78,6 @@ public class TrackListFragment extends Fragment
         }
 
         mDownloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-
-        //        mDownloader = FragmentHelper.createOrRestore(getFragmentManager(), "downloader", new Func0<PostDownloadTaskFragment>()
-        //        {
-        //            @Override
-        //            public PostDownloadTaskFragment call()
-        //            {
-        //                return PostDownloadTaskFragment.create();
-        //            }
-        //        });
 
         mDirectoryPicker = MyDirectoryChooserFragment.newInstance(mSavePath, "");
     }
@@ -244,16 +234,6 @@ public class TrackListFragment extends Fragment
                                 }
                             });
 
-                            //                            for (UICacheModel uiCacheModel : mUICache.values())
-                            //                            {
-                            //                                CheckableRelativeLayout trackView = (CheckableRelativeLayout)uiCacheModel.trackView;
-                            //
-                            //                                if (!trackView.isChecked())
-                            //                                {
-                            //                                    mTrackList.removeView(uiCacheModel.trackView);
-                            //                                }
-                            //                            }
-
                             for (TrackModel trackModel : mListState.values())
                             {
                                 if (!trackModel.isChecked)
@@ -280,43 +260,6 @@ public class TrackListFragment extends Fragment
                         }
                     })
         );
-
-        //        mSubscriptionHelper.manage(
-        //            mDownloader
-        //                .observeDownloadButtonState()
-        //                .observeOn(AndroidSchedulers.mainThread())
-        //                .subscribe(new Action1<Boolean>()
-        //                {
-        //                    @Override
-        //                    public void call(Boolean isEnabled)
-        //                    {
-        //                        mDownloadButton.setEnabled(isEnabled);
-        //                    }
-        //                })
-        //        );
-
-        //        mSubscriptionHelper.manage(
-        //            mDownloader
-        //                .observeProgress()
-        //                .observeOn(AndroidSchedulers.mainThread())
-        //                .subscribe(new Action1<DownloadProgress>()
-        //                {
-        //                    @Override
-        //                    public void call(DownloadProgress progress)
-        //                    {
-        //                        //                        String postItemKey = progress.url.toString();
-        //                        //                        ProgressBar progressBar = mProgressBars.get(postItemKey);
-        //                        //                        int value = progress.progress;
-        //                        //
-        //                        //                        if (value > 0)
-        //                        //                        {
-        //                        //                            progressBar.setVisibility(View.VISIBLE);
-        //                        //                        }
-        //                        //
-        //                        //                        progressBar.setProgress(value);
-        //                    }
-        //                })
-        //        );
     }
 
     @Override
@@ -369,12 +312,6 @@ public class TrackListFragment extends Fragment
                         });
 
                         setTrackChecked(url, trackModel.isChecked);
-
-                        UICacheModel uiCacheModel = new UICacheModel();
-                        uiCacheModel.mCheckBox = checkBox;
-                        uiCacheModel.trackView = view;
-
-                        mUICache.put(url, uiCacheModel);
 
                         view.setChecked(trackModel.isChecked);
                         view.setOnClickListener(new View.OnClickListener()

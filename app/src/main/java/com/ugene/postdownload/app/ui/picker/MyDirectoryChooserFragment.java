@@ -1,4 +1,4 @@
-package com.ugene.postdownload.app.ui;
+package com.ugene.postdownload.app.ui.picker;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

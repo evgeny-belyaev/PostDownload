@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import com.ugene.postdownload.app.R;
 import com.ugene.postdownload.app.core.PostDto;
-import com.ugene.postdownload.app.lib.FragmentHelper;
+import com.ugene.postdownload.app.core.FragmentHelper;
 import rx.functions.Func0;
 
 public class MainActivity extends FragmentActivity

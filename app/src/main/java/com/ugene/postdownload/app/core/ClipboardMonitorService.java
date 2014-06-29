@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import com.ugene.postdownload.app.R;
-import com.ugene.postdownload.app.lib.SubscriptionHelper;
 import com.ugene.postdownload.app.ui.MainActivity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
