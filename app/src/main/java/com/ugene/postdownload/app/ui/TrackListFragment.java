@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.bugsense.trace.BugSenseHandler;
 import com.ugene.postdownload.app.R;
 import com.ugene.postdownload.app.core.*;
 import com.ugene.postdownload.app.ui.picker.MyDirectoryChooserFragment;
@@ -223,6 +224,8 @@ public class TrackListFragment extends Fragment
                         @Override
                         public void call(Button button)
                         {
+                            BugSenseHandler.sendEvent("Download button clicked");
+
                             TrackModel[] values = mListState.values()
                                 .toArray(new TrackModel[] { });
 

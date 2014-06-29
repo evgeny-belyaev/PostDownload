@@ -3,7 +3,10 @@ package com.ugene.postdownload.app.core;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.*;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
@@ -11,6 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+import com.bugsense.trace.BugSenseHandler;
 import com.ugene.postdownload.app.R;
 import com.ugene.postdownload.app.ui.MainActivity;
 import org.jsoup.Jsoup;
@@ -42,6 +46,8 @@ public class ClipboardMonitorService extends Service
     public void onCreate()
     {
         super.onCreate();
+
+        BugSenseHandler.initAndStartSession(this, getString(R.string.bugsence_api_key));
 
         mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         mClipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
@@ -189,6 +195,8 @@ public class ClipboardMonitorService extends Service
                     }
 
                     mTrigger.onNext(new URL(text.toString()));
+
+                    BugSenseHandler.sendEvent("Url copied to clipboard");
                 }
                 catch (MalformedURLException e)
                 {
@@ -206,9 +214,8 @@ public class ClipboardMonitorService extends Service
     {
         NotificationCompat.Builder builder =
             new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_action_download)
                 .setContentTitle(getString(R.string.notification_title))
-                .setContentText(getString(R.string.notification_post_is_downloading))
                 .setProgress(0, 0, true);
 
         mNotificationManager.notify(id, builder.build());
@@ -220,21 +227,29 @@ public class ClipboardMonitorService extends Service
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(MainActivity.INTENT_EXTRA_POST_DTO, postDto);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(
+        PendingIntent open = PendingIntent.getActivity(
             this,
             MainActivity.REQUEST_CODE_OPEN_ACTIVITY,
             intent,
             PendingIntent.FLAG_ONE_SHOT
         );
 
+        PendingIntent download = PendingIntent.getActivity(
+            this,
+            MainActivity.REQUEST_CODE_DOWNLOAD_ALL,
+            intent,
+            PendingIntent.FLAG_ONE_SHOT
+        );
+
         NotificationCompat.Builder builder =
             new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_action_download)
                 .setAutoCancel(true)
-                .setContentTitle(getString(R.string.notification_title))
-                .setContentText(postDto.title)
+                .setContentTitle(postDto.title)
+                .setContentText(getString(R.string.press_to_download))
                 .setProgress(0, 0, false)
-                .setContentIntent(pendingIntent);
+//                .addAction(R.drawable.ic_action_download, getString(R.string.dowload_all), download)
+                .setContentIntent(open);
 
         // mId allows you to update the notification later on.
         mNotificationManager.notify(id, builder.build());
@@ -296,6 +311,8 @@ public class ClipboardMonitorService extends Service
 
             postDto.songs.add(trackDto);
         }
+
+        BugSenseHandler.sendEvent("Post downloaded and parsed");
 
         return postDto;
     }

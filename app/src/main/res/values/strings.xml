@@ -17,5 +17,8 @@
     <string name="track1">трек</string>
     <string name="track3">трека</string>
     <string name="track5">треков</string>
+    <string name="bugsence_api_key">e885e3ed</string>
+    <string name="press_to_download">Press to download</string>
+    <string name="dowload_all">Download all</string>
 
 </resources>

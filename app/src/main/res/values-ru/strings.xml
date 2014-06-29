@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ВКонтакте. Музыка оффлайн.</string>
+    <string name="create_dir_confirm">Ок</string>
+    <string name="create_dir_cancel">Отмена</string>
+    <string name="create_dir_title">Создать папку</string>
+    <string name="create_dir_dialog_name_hint">Введите имя папки</string>
+    <string name="main_activity_title">Загрузка</string>
+    <string name="device_is_offline">Нет доступа у интернет</string>
+    <string name="notification_post_is_downloading">Загрузка...</string>
+    <string name="notification_title">ВКонтакте. Музыка оффлайн.</string>
+    <string name="save_to">Сохранить в .../%1$s/%2$s</string>
+    <string name="free_gb">%1$s ГБ свободно</string>
+    <string name="free_mb">%1$s МБ свободно</string>
+    <string name="download_tracks">Загрузить %1$s</string>
+    <string name="track1">трек</string>
+    <string name="track3">трека</string>
+    <string name="track5">треков</string>
+    <string name="bugsence_api_key">e885e3ed</string>
+    <string name="press_to_download">Нажмите чтобы загрузить</string>
+    <string name="dowload_all">Загрузить все</string>
+
+</resources>
