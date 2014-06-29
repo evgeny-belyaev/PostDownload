@@ -3,10 +3,7 @@ package com.ugene.postdownload.app.core;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
@@ -312,3 +309,4 @@ public class ClipboardMonitorService extends Service
         return netInfo != null && netInfo.isConnected();
     }
 }
+
