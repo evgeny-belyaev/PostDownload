@@ -15,6 +15,6 @@ public class SubscriptionHelper
     public void unsubscribe()
     {
         mCompositeSubscription.unsubscribe();
-        mCompositeSubscription.clear();
+        mCompositeSubscription = new CompositeSubscription();
     }
 }

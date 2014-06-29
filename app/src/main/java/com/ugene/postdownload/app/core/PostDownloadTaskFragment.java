@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+@Deprecated
 public class PostDownloadTaskFragment extends Fragment
 {
     private SubscriptionHelper mSubscriptionHelper;

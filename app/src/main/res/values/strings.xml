@@ -8,5 +8,6 @@
     <string name="create_dir_title">Create folder</string>
     <string name="create_dir_dialog_name_hint">Enter folder name</string>
     <string name="main_activity_title">Download</string>
+    <string name="device_is_offline">Device is offline</string>
 
 </resources>

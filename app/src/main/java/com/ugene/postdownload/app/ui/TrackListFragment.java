@@ -15,7 +15,6 @@ import com.ugene.postdownload.app.R;
 import com.ugene.postdownload.app.StringHelpers;
 import com.ugene.postdownload.app.TrackModel;
 import com.ugene.postdownload.app.UICacheModel;
-import com.ugene.postdownload.app.core.PostDownloadTaskFragment;
 import com.ugene.postdownload.app.core.PostDto;
 import com.ugene.postdownload.app.core.TrackDto;
 import com.ugene.postdownload.app.lib.SubscriptionHelper;
@@ -50,7 +49,6 @@ public class TrackListFragment extends Fragment
     private ImageButton mExpand;
 
     private SubscriptionHelper mSubscriptionHelper;
-    private PostDownloadTaskFragment mDownloader;
     private String mPostTitle;
     private MyDirectoryChooserFragment mDirectoryPicker;
 

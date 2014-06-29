@@ -13,13 +13,14 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 import com.ugene.postdownload.app.R;
+import com.ugene.postdownload.app.lib.SubscriptionHelper;
 import com.ugene.postdownload.app.ui.MainActivity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -37,7 +38,7 @@ public class ClipboardMonitorService extends Service
 
     private ClipboardManager mClipboardManager;
     private PublishSubject<URL> mTrigger;
-    private Subscription mSubscription;
+    private SubscriptionHelper mSubscriptionHelper = new SubscriptionHelper();
 
     @Override
     public void onCreate()
@@ -49,55 +50,78 @@ public class ClipboardMonitorService extends Service
 
         mTrigger = PublishSubject.create();
 
-        mSubscription = mTrigger
-            .filter(new Func1<URL, Boolean>()
-            {
-                @Override
-                public Boolean call(URL url)
+        mSubscriptionHelper.manage(mTrigger
+                .filter(new Func1<URL, Boolean>()
                 {
-                    return isOnline(ClipboardMonitorService.this);
-                }
-            })
-            .flatMap(new Func1<URL, Observable<PostDto>>()
-            {
-                @Override
-                public Observable<PostDto> call(URL url)
+                    @Override
+                    public Boolean call(URL url)
+                    {
+                        return isOnline(ClipboardMonitorService.this);
+                    }
+                })
+                .flatMap(new Func1<URL, Observable<PostDto>>()
                 {
-                    Log.d("ClipboardMonitorService", url.toString());
+                    @Override
+                    public Observable<PostDto> call(URL url)
+                    {
+                        Log.d("ClipboardMonitorService", url.toString());
 
-                    return
-                        downloadPost(url)
-                            .map(new Func1<Document, PostDto>()
-                            {
-                                @Override
-                                public PostDto call(Document document)
+                        return
+                            downloadPost(url)
+                                .map(new Func1<Document, PostDto>()
                                 {
-                                    return parsePost(document);
-                                }
-                            });
-                }
-            })
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry()
-            .subscribe(
-                new Action1<PostDto>()
+                                    @Override
+                                    public PostDto call(Document document)
+                                    {
+                                        return parsePost(document);
+                                    }
+                                });
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry()
+                .subscribe(
+                    new Action1<PostDto>()
+                    {
+                        @Override
+                        public void call(PostDto postDto)
+                        {
+                            showNotification(postDto);
+                        }
+                    },
+                    new Action1<Throwable>()
+                    {
+                        @Override
+                        public void call(Throwable throwable)
+                        {
+                            int i = 5;
+                        }
+                    }
+                )
+        );
+
+        mSubscriptionHelper.manage(
+            mTrigger
+                .filter(new Func1<URL, Boolean>()
                 {
                     @Override
-                    public void call(PostDto postDto)
+                    public Boolean call(URL url)
                     {
-                        showNotification(postDto);
+                        return !isOnline(ClipboardMonitorService.this);
                     }
-                },
-                new Action1<Throwable>()
+                })
+                .subscribe(new Action1<URL>()
                 {
                     @Override
-                    public void call(Throwable throwable)
+                    public void call(URL url)
                     {
-                        int i = 5;
+                        Toast
+                            .makeText(ClipboardMonitorService.this, getString(R.string.device_is_offline), Toast.LENGTH_LONG)
+                            .show();
                     }
-                }
-            );
+                })
+        );
     }
 
     @Override
@@ -111,7 +135,7 @@ public class ClipboardMonitorService extends Service
                 mOnPrimaryClipChangedListener);
         }
 
-        mSubscription.unsubscribe();
+        mSubscriptionHelper.unsubscribe();
     }
 
     @Override
@@ -152,6 +176,7 @@ public class ClipboardMonitorService extends Service
     private void showNotification(PostDto postDto)
     {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(MainActivity.INTENT_EXTRA_POST_DTO, postDto);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -164,6 +189,7 @@ public class ClipboardMonitorService extends Service
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
+                .setAutoCancel(true)
                 .setContentTitle("Copied url")
                 .setContentText(postDto.title)
                 .setContentIntent(pendingIntent);
