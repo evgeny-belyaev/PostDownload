@@ -10,5 +10,12 @@
     <string name="device_is_offline">Device is offline</string>
     <string name="notification_post_is_downloading">VK post is downloading</string>
     <string name="notification_title">PostDownload</string>
+    <string name="save_to">Сохранить в .../%1$s/%2$s</string>
+    <string name="free_gb">%1$s ГБ свободно</string>
+    <string name="free_mb">%1$s МБ свободно</string>
+    <string name="download_tracks">Загрузить %1$s</string>
+    <string name="track1">трек</string>
+    <string name="track3">трека</string>
+    <string name="track5">треков</string>
 
 </resources>

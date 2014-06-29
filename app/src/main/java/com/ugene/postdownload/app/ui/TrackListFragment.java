@@ -12,11 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.ugene.postdownload.app.R;
-import com.ugene.postdownload.app.core.StringHelpers;
-import com.ugene.postdownload.app.core.TrackModel;
-import com.ugene.postdownload.app.core.PostDto;
-import com.ugene.postdownload.app.core.TrackDto;
-import com.ugene.postdownload.app.core.SubscriptionHelper;
+import com.ugene.postdownload.app.core.*;
 import com.ugene.postdownload.app.ui.picker.MyDirectoryChooserFragment;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
@@ -157,7 +153,8 @@ public class TrackListFragment extends Fragment
     private void updateDownloadTo()
     {
         File f = new File(mSavePath);
-        mDownloadTo.setText("Сохранить в .../" + f.getParentFile().getName() + "/" + f.getName());
+        mDownloadTo.setText(String.format(this.getString(R.string.save_to), f.getParentFile()
+            .getName(), f.getName()));
 
         updateFreeSpace();
     }
@@ -172,11 +169,11 @@ public class TrackListFragment extends Fragment
         {
             double gbFree = mbFree / 1024;
             DecimalFormat df = new DecimalFormat("0.0");
-            mFreeSpace.setText(String.format("%s ГБ свободно", df.format(gbFree)));
+            mFreeSpace.setText(String.format(getString(R.string.free_gb), df.format(gbFree)));
         }
         else
         {
-            mFreeSpace.setText(mbFree + " МБ свободно");
+            mFreeSpace.setText(String.format(getString(R.string.free_mb), mbFree));
         }
     }
 
@@ -352,9 +349,9 @@ public class TrackListFragment extends Fragment
             .toBlocking()
             .first();
 
-        mDownloadButton.setText("Загрузить " + StringHelpers.declOfNum(number, new String[] {
-            "трек", "трека", "треков"
-        }));
+        mDownloadButton.setText(String.format(getString(R.string.download_tracks), StringHelpers.declOfNum(number, new String[] {
+            getString(R.string.track1), getString(R.string.track3), getString(R.string.track5)
+        })));
     }
 
     private void collapseSettings()
