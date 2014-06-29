@@ -33,7 +33,7 @@ public class CreateFolderDialog extends DialogFragment
         builder
             .setView(view)
             .setTitle(R.string.create_dir_title)
-            .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+            .setPositiveButton(R.string.create_dir_confirm, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {
@@ -41,7 +41,7 @@ public class CreateFolderDialog extends DialogFragment
                     dismiss();
                 }
             })
-            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            .setNegativeButton(R.string.create_dir_cancel, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int id)
                 {

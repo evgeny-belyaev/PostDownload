@@ -39,24 +39,44 @@ public class ClipboardMonitorService extends Service
     private ClipboardManager mClipboardManager;
     private PublishSubject<URL> mTrigger;
     private SubscriptionHelper mSubscriptionHelper = new SubscriptionHelper();
+    private NotificationManager mNotificationManager;
+    private int mNotificationId = 0;
 
     @Override
     public void onCreate()
     {
         super.onCreate();
 
+        mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         mClipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         mClipboardManager.addPrimaryClipChangedListener(mOnPrimaryClipChangedListener);
 
         mTrigger = PublishSubject.create();
 
-        mSubscriptionHelper.manage(mTrigger
+        mSubscriptionHelper.manage(
+            mTrigger
                 .filter(new Func1<URL, Boolean>()
                 {
                     @Override
                     public Boolean call(URL url)
                     {
                         return isOnline(ClipboardMonitorService.this);
+                    }
+                })
+                .doOnNext(new Action1<URL>()
+                {
+                    @Override
+                    public void call(URL url)
+                    {
+                        mNotificationId++;
+                    }
+                })
+                .doOnNext(new Action1<URL>()
+                {
+                    @Override
+                    public void call(URL url)
+                    {
+                        showNotification(mNotificationId);
                     }
                 })
                 .flatMap(new Func1<URL, Observable<PostDto>>()
@@ -78,6 +98,14 @@ public class ClipboardMonitorService extends Service
                                 });
                     }
                 })
+                .doOnError(new Action1<Throwable>()
+                {
+                    @Override
+                    public void call(Throwable throwable)
+                    {
+                        cancelNotification(mNotificationId);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry()
@@ -87,7 +115,7 @@ public class ClipboardMonitorService extends Service
                         @Override
                         public void call(PostDto postDto)
                         {
-                            showNotification(postDto);
+                            updateNotification(mNotificationId, postDto);
                         }
                     },
                     new Action1<Throwable>()
@@ -173,7 +201,24 @@ public class ClipboardMonitorService extends Service
             }
         };
 
-    private void showNotification(PostDto postDto)
+    private void cancelNotification(int notificationId)
+    {
+        mNotificationManager.cancel(notificationId);
+    }
+
+    private void showNotification(int id)
+    {
+        NotificationCompat.Builder builder =
+            new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle(getString(R.string.notification_title))
+                .setContentText(getString(R.string.notification_post_is_downloading))
+                .setProgress(0, 0, true);
+
+        mNotificationManager.notify(id, builder.build());
+    }
+
+    private void updateNotification(int id, PostDto postDto)
     {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -186,17 +231,17 @@ public class ClipboardMonitorService extends Service
             PendingIntent.FLAG_ONE_SHOT
         );
 
-        NotificationCompat.Builder mBuilder =
+        NotificationCompat.Builder builder =
             new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setAutoCancel(true)
-                .setContentTitle("Copied url")
+                .setContentTitle(getString(R.string.notification_title))
                 .setContentText(postDto.title)
+                .setProgress(0, 0, false)
                 .setContentIntent(pendingIntent);
 
-        NotificationManager mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
-        mNotificationManager.notify(0, mBuilder.build());
+        mNotificationManager.notify(id, builder.build());
     }
 
     private static Observable<Document> downloadPost(final URL url)
