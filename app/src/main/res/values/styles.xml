@@ -6,6 +6,23 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="AppTheme.Starter"></style>
+    <style name="AppTheme.Starter.Row">
+        <item name="android:layout_margin">16dp</item>
+    </style>
+
+    <style name="AppTheme.Starter.Outer">
+        <item name="android:layout_margin">16dp</item>
+    </style>
+
+    <style name="AppTheme.Starter.Number">
+        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+    </style>
+
+    <style name="AppTheme.Starter.Content">
+        <item name="android:layout_marginLeft">16dp</item>
+    </style>
+
     <style name="AppTheme.Frame">
         <item name="android:layout_margin">0dp</item>
         <item name="android:padding">0dp</item>
