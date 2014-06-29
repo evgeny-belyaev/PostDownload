@@ -190,6 +190,15 @@ public class DirectoryChooserFragment extends android.support.v4.app.DialogFragm
             }
         });
 
+        mListDirectories.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                return false;
+            }
+        });
+
         mBtnNavUp.setOnClickListener(new OnClickListener()
         {
 

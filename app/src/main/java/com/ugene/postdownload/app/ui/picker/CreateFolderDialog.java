@@ -14,7 +14,19 @@ import rx.subjects.PublishSubject;
 
 public class CreateFolderDialog extends DialogFragment
 {
+    private static final String BUNDLE_KEY_FOLDER_NAME = "folderName";
     private final PublishSubject<String> mSubject;
+
+    public static CreateFolderDialog create(String folderName)
+    {
+        Bundle b = new Bundle();
+        b.putString(BUNDLE_KEY_FOLDER_NAME, folderName);
+
+        CreateFolderDialog f = new CreateFolderDialog();
+        f.setArguments(b);
+
+        return f;
+    }
 
     public CreateFolderDialog()
     {
@@ -29,6 +41,13 @@ public class CreateFolderDialog extends DialogFragment
 
         View view = inflater.inflate(R.layout.create_dir_dialog, null);
         final EditText name = (EditText)view.findViewById(R.id.create_dir_dialog_name);
+
+        if (savedInstanceState == null)
+        {
+            name.setText(getArguments().getString(BUNDLE_KEY_FOLDER_NAME));
+        }
+
+        name.setSelection(name.getText().length());
 
         builder
             .setView(view)

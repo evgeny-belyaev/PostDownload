@@ -33,6 +33,7 @@ public class TrackListFragment extends Fragment
     private static final String BUNDLE_KEY_TITLE = "title";
     private static final String BUNDLE_KEY_SAVE_PATH = "savePath";
     private static final String BUNDLE_KEY_SETTINGS_EXPANDED = "settingsExpanded";
+    private static final java.lang.String BUNDLE_KEY_FIRST_TRACK_ARTIST = "firstTrackArtist";
     private LinearLayout mTrackList;
     private Button mDownloadButton;
     private TextView mTitle;
@@ -49,6 +50,7 @@ public class TrackListFragment extends Fragment
 
     private String mSavePath;
     private DownloadManager mDownloadManager;
+    private String mFirstTrackArtist;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -62,11 +64,13 @@ public class TrackListFragment extends Fragment
             mListState = (HashMap<String, TrackModel>)savedInstanceState.getSerializable(BUNDLE_KEY_STATE);
             mPostTitle = savedInstanceState.getString(BUNDLE_KEY_TITLE);
             mSavePath = savedInstanceState.getString(BUNDLE_KEY_SAVE_PATH);
+            mFirstTrackArtist = savedInstanceState.getString(BUNDLE_KEY_FIRST_TRACK_ARTIST);
         }
         else
         {
             PostDto postDto = MainActivity.getPost(getActivity().getIntent());
             mPostTitle = postDto.title;
+            mFirstTrackArtist = postDto.songs.get(0).artist;
             createListState(postDto);
             mSavePath = Environment
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
@@ -75,7 +79,7 @@ public class TrackListFragment extends Fragment
 
         mDownloadManager = (DownloadManager)getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
 
-        mDirectoryPicker = MyDirectoryChooserFragment.newInstance(mSavePath, "");
+        mDirectoryPicker = MyDirectoryChooserFragment.newInstance(mSavePath, mFirstTrackArtist);
     }
 
     private void createListState(PostDto postDto)
@@ -205,7 +209,7 @@ public class TrackListFragment extends Fragment
                     {
                         mSavePath = path;
                         updateDownloadTo();
-                        mDirectoryPicker.updateInitialDirectory(path, "");
+                        mDirectoryPicker.updateInitialDirectory(path, mFirstTrackArtist);
                     }
                 })
         );
@@ -380,6 +384,7 @@ public class TrackListFragment extends Fragment
         outState.putSerializable(BUNDLE_KEY_STATE, mListState);
         outState.putString(BUNDLE_KEY_TITLE, mPostTitle);
         outState.putString(BUNDLE_KEY_SAVE_PATH, mSavePath);
+        outState.putString(BUNDLE_KEY_FIRST_TRACK_ARTIST, mFirstTrackArtist);
         outState.putBoolean(BUNDLE_KEY_SETTINGS_EXPANDED, mExpand.isActivated());
     }
 }

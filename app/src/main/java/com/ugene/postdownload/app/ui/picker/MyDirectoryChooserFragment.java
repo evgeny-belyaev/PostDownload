@@ -42,7 +42,8 @@ public class MyDirectoryChooserFragment extends DirectoryChooserFragment
     {
         super.onResume();
 
-        mCreateFolderDialog = new CreateFolderDialog();
+        mCreateFolderDialog = CreateFolderDialog.create(mNewDirectoryName);
+
         mCompositeSubscription.add(
             mCreateFolderDialog
                 .observe()
