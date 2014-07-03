@@ -194,7 +194,14 @@ public class ClipboardMonitorService extends Service
                         return;
                     }
 
-                    mTrigger.onNext(new URL(text.toString()));
+                    URL url = new URL(text.toString());
+
+                    if (!url.getHost().equals("vk.com"))
+                    {
+                        return;
+                    }
+
+                    mTrigger.onNext(url);
 
                     BugSenseHandler.sendEvent("Url copied to clipboard");
                 }
@@ -248,7 +255,7 @@ public class ClipboardMonitorService extends Service
                 .setContentTitle(postDto.title)
                 .setContentText(getString(R.string.press_to_download))
                 .setProgress(0, 0, false)
-//                .addAction(R.drawable.ic_action_download, getString(R.string.dowload_all), download)
+                    //                .addAction(R.drawable.ic_action_download, getString(R.string.dowload_all), download)
                 .setContentIntent(open);
 
         // mId allows you to update the notification later on.
