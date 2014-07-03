@@ -289,8 +289,8 @@ public class ClipboardMonitorService extends Service
 
         PostDto postDto = new PostDto();
 
-        postDto.title = document.select("div.fw_post_name").first().text();
-        postDto.body = document.select("div.wall_post_text").first().text();
+        postDto.title = document.select("div.fw_post_name").first().text().trim();
+        postDto.body = document.select("div.wall_post_text").first().text().trim();
 
         Elements urls = document.select("div.audio input");
         Elements titles = document.select("div.audio td.info span.title");
@@ -303,9 +303,9 @@ public class ClipboardMonitorService extends Service
         {
             TrackDto trackDto = new TrackDto();
 
-            trackDto.title = titles.get(i).text();
-            trackDto.artist = artists.get(i).text();
-            trackDto.duration = durations.get(i).text();
+            trackDto.title = titles.get(i).text().trim();
+            trackDto.artist = artists.get(i).text().trim();
+            trackDto.duration = durations.get(i).text().trim();
 
             try
             {
