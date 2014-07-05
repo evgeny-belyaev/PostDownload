@@ -7,10 +7,10 @@ import android.util.Log;
 
 public class Autostart extends BroadcastReceiver
 {
-    public void onReceive(Context arg0, Intent arg1)
+    public void onReceive(Context context, Intent arg1)
     {
-        Intent intent = new Intent(arg0, ClipboardMonitorService.class);
-        arg0.startService(intent);
+        Intent intent = new Intent(context, ClipboardMonitorService.class);
+        context.startService(intent);
         Log.i("Autostart", "started");
     }
 }

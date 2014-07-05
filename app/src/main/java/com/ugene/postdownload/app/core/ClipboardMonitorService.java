@@ -82,32 +82,45 @@ public class ClipboardMonitorService extends Service
                     }
                 })
                 .flatMap(new Func1<URL, Observable<PostDto>>()
-                {
-                    @Override
-                    public Observable<PostDto> call(URL url)
-                    {
-                        Log.d("ClipboardMonitorService", url.toString());
+                         {
+                             @Override
+                             public Observable<PostDto> call(final URL url)
+                             {
+                                 Log.d("ClipboardMonitorService", url.toString());
 
-                        return
-                            downloadPost(url)
-                                .map(new Func1<Document, PostDto>()
-                                {
-                                    @Override
-                                    public PostDto call(Document document)
-                                    {
-                                        return parsePost(document);
-                                    }
-                                });
-                    }
-                })
+                                 return
+                                     downloadPost(url)
+                                         .map(new Func1<Document, PostDto>()
+                                              {
+                                                  @Override
+                                                  public PostDto call(Document document)
+                                                  {
+                                                      try
+                                                      {
+                                                          return parsePost(document);
+                                                      }
+                                                      catch (Exception x)
+                                                      {
+                                                          BugSenseHandler.sendExceptionMessage("Problem parsing post at url", url
+                                                              .toString(), x);
+                                                      }
+
+                                                      return new PostDto();
+                                                  }
+                                              }
+                                         );
+                             }
+                         }
+                )
                 .doOnError(new Action1<Throwable>()
-                {
-                    @Override
-                    public void call(Throwable throwable)
-                    {
-                        cancelNotification(mNotificationId);
-                    }
-                })
+                           {
+                               @Override
+                               public void call(Throwable throwable)
+                               {
+                                   cancelNotification(mNotificationId);
+                               }
+                           }
+                )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry()
@@ -134,23 +147,30 @@ public class ClipboardMonitorService extends Service
         mSubscriptionHelper.manage(
             mTrigger
                 .filter(new Func1<URL, Boolean>()
-                {
-                    @Override
-                    public Boolean call(URL url)
-                    {
-                        return !isOnline(ClipboardMonitorService.this);
-                    }
-                })
-                .subscribe(new Action1<URL>()
-                {
-                    @Override
-                    public void call(URL url)
-                    {
-                        Toast
-                            .makeText(ClipboardMonitorService.this, getString(R.string.device_is_offline), Toast.LENGTH_LONG)
-                            .show();
-                    }
-                })
+
+                        {
+                            @Override
+                            public Boolean call(URL url)
+                            {
+                                return !isOnline(ClipboardMonitorService.this);
+                            }
+                        }
+
+                )
+                .
+
+                    subscribe(new Action1<URL>()
+                              {
+                                  @Override
+                                  public void call(URL url)
+                                  {
+                                      Toast
+                                          .makeText(ClipboardMonitorService.this, getString(R.string.device_is_offline), Toast.LENGTH_LONG)
+                                          .show();
+                                  }
+                              }
+
+                    )
         );
     }
 
@@ -230,36 +250,35 @@ public class ClipboardMonitorService extends Service
 
     private void updateNotification(int id, PostDto postDto)
     {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(MainActivity.INTENT_EXTRA_POST_DTO, postDto);
+        if (postDto.songs.size() == 0)
+        {
+            mNotificationManager.cancel(id);
+        }
+        else
+        {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra(MainActivity.INTENT_EXTRA_POST_DTO, postDto);
 
-        PendingIntent open = PendingIntent.getActivity(
-            this,
-            MainActivity.REQUEST_CODE_OPEN_ACTIVITY,
-            intent,
-            PendingIntent.FLAG_ONE_SHOT
-        );
+            PendingIntent open = PendingIntent.getActivity(
+                this,
+                MainActivity.REQUEST_CODE_OPEN_ACTIVITY,
+                intent,
+                PendingIntent.FLAG_ONE_SHOT
+            );
 
-        PendingIntent download = PendingIntent.getActivity(
-            this,
-            MainActivity.REQUEST_CODE_DOWNLOAD_ALL,
-            intent,
-            PendingIntent.FLAG_ONE_SHOT
-        );
+            NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.ic_action_download)
+                    .setAutoCancel(true)
+                    .setContentTitle(postDto.title)
+                    .setContentText(getString(R.string.press_to_download))
+                    .setProgress(0, 0, false)
+                    .setContentIntent(open);
 
-        NotificationCompat.Builder builder =
-            new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_action_download)
-                .setAutoCancel(true)
-                .setContentTitle(postDto.title)
-                .setContentText(getString(R.string.press_to_download))
-                .setProgress(0, 0, false)
-                    //                .addAction(R.drawable.ic_action_download, getString(R.string.dowload_all), download)
-                .setContentIntent(open);
-
-        // mId allows you to update the notification later on.
-        mNotificationManager.notify(id, builder.build());
+            // mId allows you to update the notification later on.
+            mNotificationManager.notify(id, builder.build());
+        }
     }
 
     private static Observable<Document> downloadPost(final URL url)

@@ -2,7 +2,6 @@ package com.ugene.postdownload.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v4.app.FragmentActivity;
 import android.webkit.WebView;
 import com.ugene.postdownload.app.R;
@@ -44,13 +43,8 @@ public class StarterActivity extends FragmentActivity
 
         help.loadDataWithBaseURL("", total.toString(), "text/html", "utf-8", "");
 
-        if (Debug.isDebuggerConnected())
-        {
-            mServiceIntent = new Intent(this, ClipboardMonitorService.class);
-            startService(mServiceIntent);
-
-            //            finish();
-        }
+        mServiceIntent = new Intent(this, ClipboardMonitorService.class);
+        startService(mServiceIntent);
     }
 }
 
