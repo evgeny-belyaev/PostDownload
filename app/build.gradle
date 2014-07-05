@@ -22,8 +22,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
     }
 
     final Console console = System.console();
@@ -32,7 +32,7 @@ android {
 
         signingConfigs {
             release {
-                storeFile file(console.readLine("Enter keystore path: "))
+                storeFile file(console.readLine("\nEnter keystore path: "))
                 storePassword console.readLine("Enter keystore password: ")
                 keyAlias console.readLine("Enter alias key: ")
                 keyPassword console.readLine("Enter key password: ")
