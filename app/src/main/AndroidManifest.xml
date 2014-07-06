@@ -3,6 +3,7 @@
           package="com.ugene.postdownload.app">
 
     <uses-sdk
+        android:targetSdkVersion="19"
         android:maxSdkVersion="19"
         android:minSdkVersion="14"/>
 
