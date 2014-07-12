@@ -15,10 +15,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import com.bugsense.trace.BugSenseHandler;
+import com.google.common.base.Optional;
+import com.google.common.base.Supplier;
 import com.ugene.postdownload.app.R;
 import com.ugene.postdownload.app.ui.MainActivity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -155,22 +159,18 @@ public class ClipboardMonitorService extends Service
                                 return !isOnline(ClipboardMonitorService.this);
                             }
                         }
-
                 )
-                .
-
-                    subscribe(new Action1<URL>()
-                              {
-                                  @Override
-                                  public void call(URL url)
-                                  {
-                                      Toast
-                                          .makeText(ClipboardMonitorService.this, getString(R.string.device_is_offline), Toast.LENGTH_LONG)
-                                          .show();
-                                  }
-                              }
-
-                    )
+                .subscribe(new Action1<URL>()
+                           {
+                               @Override
+                               public void call(URL url)
+                               {
+                                   Toast
+                                       .makeText(ClipboardMonitorService.this, getString(R.string.device_is_offline), Toast.LENGTH_LONG)
+                                       .show();
+                               }
+                           }
+                )
         );
     }
 
@@ -308,8 +308,14 @@ public class ClipboardMonitorService extends Service
 
         PostDto postDto = new PostDto();
 
-        postDto.title = document.select("div.fw_post_name").first().text().trim();
-        postDto.body = document.select("div.wall_post_text").first().text().trim();
+        postDto.title = Optional
+            .fromNullable(document.select("div.fw_post_name").first())
+            .or(getElementSupplier(""))
+            .text().trim();
+        postDto.body = Optional.fromNullable(document.select("div.wall_post_text").first())
+            .or(getElementSupplier(""))
+            .text()
+            .trim();
 
         Elements urls = document.select("div.audio input");
         Elements titles = document.select("div.audio td.info span.title");
@@ -341,6 +347,18 @@ public class ClipboardMonitorService extends Service
         BugSenseHandler.sendEvent("Post downloaded and parsed");
 
         return postDto;
+    }
+
+    private static Supplier<Element> getElementSupplier(String value)
+    {
+        return new Supplier<Element>()
+        {
+            @Override
+            public Element get()
+            {
+                return new Element(Tag.valueOf("p"), "");
+            }
+        };
     }
 
     public static boolean isOnline(Context ctx)
