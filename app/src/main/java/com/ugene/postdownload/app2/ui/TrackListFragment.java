@@ -1,4 +1,4 @@
-package com.ugene.postdownload.app.ui;
+package com.ugene.postdownload.app2.ui;
 
 import android.app.DownloadManager;
 import android.content.Context;
@@ -12,9 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.bugsense.trace.BugSenseHandler;
-import com.ugene.postdownload.app.R;
-import com.ugene.postdownload.app.core.*;
-import com.ugene.postdownload.app.ui.picker.MyDirectoryChooserFragment;
+import com.ugene.postdownload.app2.R;
+import com.ugene.postdownload.app2.core.*;
+import com.ugene.postdownload.app2.ui.picker.MyDirectoryChooserFragment;
 import rx.Observable;
 import rx.android.observables.ViewObservable;
 import rx.functions.Action1;

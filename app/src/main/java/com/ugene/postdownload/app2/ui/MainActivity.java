@@ -1,13 +1,13 @@
-package com.ugene.postdownload.app.ui;
+package com.ugene.postdownload.app2.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import com.bugsense.trace.BugSenseHandler;
-import com.ugene.postdownload.app.R;
-import com.ugene.postdownload.app.core.FragmentHelper;
-import com.ugene.postdownload.app.core.PostDto;
+import com.ugene.postdownload.app2.R;
+import com.ugene.postdownload.app2.core.FragmentHelper;
+import com.ugene.postdownload.app2.core.PostDto;
 import rx.functions.Func0;
 
 public class MainActivity extends FragmentActivity

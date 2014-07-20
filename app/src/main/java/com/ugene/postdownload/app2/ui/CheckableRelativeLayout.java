@@ -1,4 +1,4 @@
-package com.ugene.postdownload.app.ui;
+package com.ugene.postdownload.app2.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;

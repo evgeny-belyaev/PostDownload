@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.ugene.postdownload.app.ui.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ugene.postdownload.app2.ui.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                        android:layout_width="match_parent"
                                                        android:layout_height="wrap_content"
                                                        style="@style/AppTheme.TrackList.Item">
@@ -32,4 +32,4 @@
         android:duplicateParentState="true"
         style="@style/AppTheme.TrackList.Item.CheckBox"/>
 
-</com.ugene.postdownload.app.ui.CheckableRelativeLayout>
+</com.ugene.postdownload.app2.ui.CheckableRelativeLayout>

@@ -1,4 +1,4 @@
-package com.ugene.postdownload.app.core;
+package com.ugene.postdownload.app2.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;

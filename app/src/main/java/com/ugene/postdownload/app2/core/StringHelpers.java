@@ -1,4 +1,4 @@
-package com.ugene.postdownload.app.core;
+package com.ugene.postdownload.app2.core;
 
 public class StringHelpers
 {

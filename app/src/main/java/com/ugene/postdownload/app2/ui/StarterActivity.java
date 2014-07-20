@@ -1,11 +1,11 @@
-package com.ugene.postdownload.app.ui;
+package com.ugene.postdownload.app2.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.webkit.WebView;
-import com.ugene.postdownload.app.R;
-import com.ugene.postdownload.app.core.ClipboardMonitorService;
+import com.ugene.postdownload.app2.R;
+import com.ugene.postdownload.app2.core.ClipboardMonitorService;
 
 import java.io.BufferedReader;
 import java.io.IOException;

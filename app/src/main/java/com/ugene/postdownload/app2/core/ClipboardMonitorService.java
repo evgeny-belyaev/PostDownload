@@ -1,4 +1,4 @@
-package com.ugene.postdownload.app.core;
+package com.ugene.postdownload.app2.core;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -17,8 +17,8 @@ import android.widget.Toast;
 import com.bugsense.trace.BugSenseHandler;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
-import com.ugene.postdownload.app.R;
-import com.ugene.postdownload.app.ui.MainActivity;
+import com.ugene.postdownload.app2.R;
+import com.ugene.postdownload.app2.ui.MainActivity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -241,7 +241,7 @@ public class ClipboardMonitorService extends Service
     {
         NotificationCompat.Builder builder =
             new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_action_download)
+                .setSmallIcon(R.drawable.icon)
                 .setContentTitle(getString(R.string.notification_title))
                 .setProgress(0, 0, true);
 
@@ -269,7 +269,7 @@ public class ClipboardMonitorService extends Service
 
             NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_action_download)
+                    .setSmallIcon(R.drawable.icon)
                     .setAutoCancel(true)
                     .setContentTitle(postDto.title)
                     .setContentText(getString(R.string.press_to_download))

@@ -1,4 +1,4 @@
-package com.ugene.postdownload.app.core;
+package com.ugene.postdownload.app2.core;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
